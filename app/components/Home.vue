@@ -24,16 +24,13 @@
 <StackLayout>
 <StackLayout   borderBottomColor="#F3F4F6" orientation="horizontal" backgroundColor="#e5e7eb" padding="5">
 <Label text="Senior One Class" class="section-title" margin="10 10" fontSize="18" fontWeight="bold" width="80%"/>
-<Label  text.decode="&#xf07c;" width="20%;" class="fas" fontSize="25" @tap="navigate"/>
+<Label  text.decode="&#xf0c9;" width="20%;" class="fas" fontSize="25" @tap="navigate" style="color:#8A93A6;"/>
 </StackLayout>
 
 
 
 <StackLayout
-v-for="(s, key) in row.subjects" :key="key" orientation="horizontal"
-padding="12"
-borderBottomWidth="1"
-borderBottomColor="#F3F4F6"
+v-for="(s, key) in row.subjects" :key="key" orientation="horizontal" padding="12" borderBottomWidth="1" borderBottomColor="#F3F4F6" @tap="subjectNavigator"
 >
 <Label
 text.decode="&#xf111;"
@@ -49,8 +46,6 @@ style="font-size:17px;"
 </StackLayout>
 </StackLayout>
 </ScrollView>
-
-<fab/>
 </GridLayout>
 
 
@@ -62,23 +57,26 @@ style="font-size:17px;"
 
 
 <script>
-import Fab from './templates/Fab.vue';
-import { key } from './database/connection.js';
 import { Http, } from "@nativescript/core";
-import Settings from './Settings.vue';
+import { key } from './database/connection.js';
 import Notification from './Notification.vue';
 import Search from './Search.vue';
+import Settings from './Settings.vue';
+import Subject from "./Subject.vue";
+
 export default {
 name:'Home',
 components: {
-Fab,
 Settings,
 Notification,
-Search
+Search,
+Subject
 },
+
 
 data() {
 return {
+title:'Senior One Class',
 isLoading:false,
 row:{
 classID:1,
@@ -133,6 +131,10 @@ this.$navigateTo(Notification);
 },
 searchNav(){
 this.$navigateTo(Search);
+},
+
+subjectNavigator(){
+this.$navigateTo(Subject);
 }
 
 
@@ -145,6 +147,7 @@ this.$navigateTo(Search);
 
 mounted() {
 this.getData();
+
 }
 
 
