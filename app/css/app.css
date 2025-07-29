@@ -1,0 +1,18 @@
+.text-title{
+font-weight:bold;
+font-size:17px;
+}
+
+.text-description{
+font-size: 15px;
+}
+
+.fab{
+background-color:'#2A9689'
+}
+
+
+.header{
+backgroundColor:'#2A9689';
+color:#fff;
+}
