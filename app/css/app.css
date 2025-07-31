@@ -20,3 +20,12 @@ color:#fff;
 .primary-background:{
 background-color: #2A9689;
 }
+
+.no-shadow-button {
+elevation: 0;
+android-elevation: 0;          /* Android: removes shadow */
+shadow-opacity: 0;      /* iOS: removes shadow */
+shadow-radius: 0;
+shadow-color: transparent;
+shadow-offset: 0 0;
+}

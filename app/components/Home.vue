@@ -1,7 +1,6 @@
 <template>
 <Page>
 <ActionBar title="ClassMate" backgroundColor="#2A9689" color="#fff">
-
 <ActionItem ios.position="right" android.position="actionBar" @tap="homeNav">
 <Label class="fas" text.decode="&#xf518;" style="color:#fff;font-size:20px;" />
 </ActionItem>
@@ -55,6 +54,30 @@ borderBottomColor="#E5E7EB"
 </StackLayout>
 </StackLayout>
 
+
+<StackLayout height="150">
+
+<Button
+class="no-shadow-button"
+marginTop="20"
+backgroundColor="#E8FCF3"
+borderRadius="10"
+fontWeight="bold">
+<FormattedString>
+ <Span text.decode="&#xf055;  " class="fas" style="font-size:17px;"/>
+<Span text="Add subject" style="font-size:17px;">
+</Span>
+</FormattedString>
+</Button>
+
+
+
+
+</StackLayout>
+
+
+
+
 </StackLayout>
 </ScrollView>
 
@@ -76,8 +99,12 @@ margin="20"
 </template>
 
 <script>
+
+
 import Class from './Class.vue';
 import Time from './controllers/time';
+import Sqlite from 'nativescript-sqlite';
+
 export default {
 name: 'Welcome',
 components: {
@@ -86,6 +113,12 @@ Class
 
 data() {
 return {
+row:{
+myTimetable:[],
+
+},
+
+database:null,
 greetings:'Hello',
 hours:null,
 date:null,
@@ -140,14 +173,55 @@ this.greetings = 'Good Evening';
 }
 
 
+},
+
+
+
+
+
+
+async initaliseDatabase(){
+if(!Sqlite.exists("classmate.db")) {
+console.log("Creating new DB...");
+}else{
+console.log('Database exist');
+}
+
+//create database instance
+await new Sqlite('classmate.db').then((db)=>{
+this.database = db;
+
+//create table
+db.execSQL('CREATE TABLE IF NOT EXISTS timetable (id INTEGER PRIMARY KEY AUTOINCREMENT, user_email TEXT, subject TEXT, day TEXT, from_time TEXT, to_time TEXT, status TEXT)');
+
+//query timetable data
+db.all("SELECT * FROM timetable WHERE user_email = ?",['katoj65@gmail.com']).then(timeTableData=>{
+console.log(timeTableData);
+this.row.myTimetable=timeTableData;
+}).catch(error=>console.error("Error querying timetable:", error));
+}).catch((error)=>{
+console.error("Error creating DB:", error);});
+
+
+
+
 }
 
 },
 
 mounted(){
 setInterval(this.timer, 1000);
-
+this.initaliseDatabase();
 },
+
+
+
+
+
+
+
+
+
 
 beforeDestroy() {
 clearInterval(this.timer);
@@ -195,4 +269,18 @@ text-align: center;
 elevation: 8;
 margin-bottom:50px;
 }
+
+
+
+.no-shadow-button {
+elevation: 0;
+android-elevation: 0;          /* Android: removes shadow */
+shadow-opacity: 0;      /* iOS: removes shadow */
+shadow-radius: 0;
+shadow-color: transparent;
+shadow-offset: 0 0;
+}
+
+
+
 </style>

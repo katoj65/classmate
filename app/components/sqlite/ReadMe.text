@@ -1,0 +1,65 @@
+import { openOrCreate, deleteDatabase } from "@nativescript-community/sqlite";
+
+const sqlite = openOrCreate("path/to/db");
+sqlite.execute("CREATE TABLE names (id INT, name TEXT)");
+sqlite.transaction(cancelTransaction => {
+    // Calling cancelTransaction will rollback all changes made to db
+    names.forEach((name, id) =>
+        sqlite.execute(
+            "INSERT INTO names (id, name) VALUES (?, ?)",
+            [id, name]
+        )
+    );
+});
+
+
+
+INSERT
+this.db.execSQL("INSERT INTO users (name, email) VALUES (?, ?)", ["Joshua", "joshua@example.com"]);
+Fetch
+this.db.all("SELECT * FROM users").then(rows => {
+  console.log("Users:", rows);
+});
+
+
+
+********
+query timetable data
+
+db.all("SELECT * FROM timetable WHERE user_email = ?",['katoj65@gmail.com']).then(response=>{
+console.log(response);
+}).catch(error=>console.error("Error querying timetable:", error));
+
+
+
+
+
+*******
+show schema
+db.all("PRAGMA table_info(timetable);", [], (err, rows) => {
+    if (err) {
+      console.error("Error getting table schema:", err);
+    } else {
+      console.log("Schema for 'timetable':", rows);
+      // Each row contains: cid, name, type, notnull, dflt_value, pk
+    }
+  });
+
+
+
+*******
+Delete table
+db.execSQL("DROP TABLE IF EXISTS timetable")
+.then(() => {
+console.log("Table 'timetable' deleted successfully.");
+})
+.catch(err => {
+ console.error("Error deleting table:", err);
+});
+
+
+******
+Add column
+ALTER TABLE timetable ADD COLUMN location TEXT;
+
+
