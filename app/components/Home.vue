@@ -1,153 +1,156 @@
 <template>
-<page>
-<ActionBar  :title="title!=null?title:'Classmate'" backgroundColor="#2A9689" style="color:#fff;">
+<Page>
+<ActionBar title="ClassMate" backgroundColor="#2A9689" color="#fff">
 
-<ActionItem  ios.position="right" android.position="actionBar" @tap="searchNav">
-<Label class="fas" text.decode="&#xf002;" style="color:#fff;font-size:20px;"/>
+<ActionItem ios.position="right" android.position="actionBar" @tap="homeNav">
+<Label class="fas" text.decode="&#xf518;" style="color:#fff;font-size:20px;" />
 </ActionItem>
 
-<ActionItem ios.position="right" android.position="actionBar" @tap="notificationNav">
-<Label class="fas" text.decode="&#xf0f3;" style="color:#fff;font-size:20px;padding-left:30px;"/>
+<ActionItem ios.position="right" android.position="actionBar">
+<Label class="fas" text.decode="&#xf0f3;" style="color:#fff;font-size:20px;padding-left:30px;" />
 </ActionItem>
 
-<ActionItem  ios.position="right" android.position="actionBar" @tap="settings">
-<Label class="fas" text.decode="&#xf142;" style="color:#fff;font-size:20px;padding-left:30px;"/>
+<ActionItem ios.position="right" android.position="actionBar">
+<Label class="fas" text.decode="&#xf142;" style="color:#fff;font-size:20px;padding-left:30px;" />
 </ActionItem>
+
 </ActionBar>
 
-
-
-
-
 <GridLayout rows="*" columns="*">
-<ScrollView>
+
+<!-- Main content -->
+<ScrollView row="0" col="0">
+<StackLayout padding="20" spacing="20">
+
+<!-- Welcome Message -->
+<Label :text="greetings+' ' + user.name + '! 🎉'" class="h1" textWrap="true" />
+
+<Label :text="date+' - '+time" class="h2" v-if="date!=null"/>
+
+
+<!-- Class Info -->
+<Label :text="'You are in: ' + user.class" class="h2" @tap="homeNav"/>
+
+<!-- Timetable Header -->
+<Label text="📚 Your Reading Timetable" class="h2" />
+
+<!-- Timetable List -->
 <StackLayout>
-<StackLayout   borderBottomColor="#F3F4F6" orientation="horizontal" backgroundColor="#e5e7eb" padding="5">
-<Label text="Senior One Class" class="section-title" margin="10 10" fontSize="18" fontWeight="bold" width="80%"/>
-<Label  text.decode="&#xf0c9;" width="20%;" class="fas" fontSize="25" @tap="navigate" style="color:#8A93A6;"/>
-</StackLayout>
-
-
-
 <StackLayout
-v-for="(s, key) in row.subjects" :key="key" orientation="horizontal" padding="12" borderBottomWidth="1" borderBottomColor="#F3F4F6" @tap="subjectNavigator"
+v-for="(entry, index) in timetable"
+:key="index"
+padding="10"
+borderBottomWidth="1"
+borderBottomColor="#E5E7EB"
+
 >
-<Label
-text.decode="&#xf111;"
-class="fas large-icon"
-verticalAlignment="center"
-marginRight="14"
-style="font-size:17px;"
-/>
-<StackLayout verticalAlignment="center">
-<Label :text="s.name" class="text-title" />
-<Label :text="s.description" class="text-description" />
-</StackLayout>
-</StackLayout>
-</StackLayout>
-</ScrollView>
+<Label :text="'📅 ' + entry.day" class="text-title" />
+
+<GridLayout columns="*, auto" rows="auto" verticalAlignment="center">
+<Label :text="'Subject: ' + entry.subject" col="0" class="text-description" />
+<Label :text="getStatusIcon(entry.status)" col="1" class="status-icon" />
 </GridLayout>
 
+<Label :text="'Time: ' + entry.time" class="text-description" />
+</StackLayout>
+</StackLayout>
 
+</StackLayout>
+</ScrollView>
 
+<!-- FAB -->
+<Button
+text.decode="&#xf1d8;"
+class="fab fas"
+row="0"
+col="0"
+@tap="onFabTap"
+horizontalAlignment="right"
+verticalAlignment="bottom"
+padding="15"
+margin="20"
+/>
 
-
-</page>
+</GridLayout>
+</Page>
 </template>
 
-
 <script>
-import { Http, } from "@nativescript/core";
-import { key } from './database/connection.js';
-import Notification from './Notification.vue';
-import Search from './Search.vue';
-import Settings from './Settings.vue';
-import Subject from "./Subject.vue";
-
+import Class from './Class.vue';
+import Time from './controllers/time';
 export default {
-name:'Home',
+name: 'Welcome',
 components: {
-Settings,
-Notification,
-Search,
-Subject
+Class
 },
-
 
 data() {
 return {
-title:'Senior One Class',
-isLoading:false,
-row:{
-classID:1,
-class:null,
-subjects:[]
+greetings:'Hello',
+hours:null,
+date:null,
+time:null,
+user: {
+name: 'Joshua',
+class: 'Senior One'
+},
+timetable: [
+{ day: 'Monday', subject: 'Mathematics', time: '8:00 AM - 9:00 AM', status: 'done' },
+{ day: 'Tuesday', subject: 'English', time: '9:00 AM - 10:00 AM', status: 'pending' },
+{ day: 'Wednesday', subject: 'Biology', time: '10:30 AM - 11:30 AM', status: 'missed' },
+{ day: 'Thursday', subject: 'History', time: '8:00 AM - 9:00 AM', status: 'done' },
+{ day: 'Friday', subject: 'Chemistry', time: '9:00 AM - 10:00 AM', status: 'pending' }
+]
+};
 },
 
+methods: {
+getStatusIcon(status) {
+switch (status) {
+case 'done': return '✅';
+case 'pending': return '⏳';
+case 'missed': return '❌';
+default: return '❓';
 }
 },
-
-
-
-methods:{
-async getData(){
-this.isLoading = true;
-await Http.request({
-url: 'https://ycmlubeulbufsfrvbmal.supabase.co/rest/v1/class?select=*,subject(name,description,id)&id=eq.'+this.row.classID,
-method: 'GET',
-headers: {
-'apikey':key,
-'Authorization': 'Bearer'+key,
-'Content-Type': 'application/json'
+onFabTap() {
+alert('FAB tapped! Add a new timetable entry?');
+},
+homeNav() {
+this.$navigateTo(Class,{
+transition: {
+name: 'slide',
+duration: 300,
+curve: 'easeInOut'
 }
-}).then(response => {
-if (response.statusCode==200) {
-
-this.isLoading = false;
-const data = response.content.toJSON();
-if(data.length > 0){
-data.forEach(element => {
-this.row.class = element;
-this.row.subjects = element.subject;
 });
-}
-
-}else{
-console.log('Error fetching data:', response.statusCode);
-}
-
-}).catch(error => {
-console.error('Request failed:', error);
-});
-
-
 },
-
-settings(){
-this.$navigateTo(Settings);
-},
-notificationNav() {
-this.$navigateTo(Notification);
-},
-searchNav(){
-this.$navigateTo(Search);
-},
-
-subjectNavigator(){
-this.$navigateTo(Subject);
+timer(){
+const time=new Time;
+let currentTime = time.getCurrentTime();
+this.hours=currentTime.hours;
+this.date=currentTime.dateTime;
+this.time=currentTime.time;
+if (this.hours >= 0 && this.hours < 12) {
+this.greetings = 'Good Morning';
+}else if (this.hours >= 12 && this.hours < 17) {
+this.greetings = 'Good Afternoon';
+}else if (this.hours >= 17 && this.hours < 24) {
+this.greetings = 'Good Evening';
 }
 
 
-
-
-
-
+}
 
 },
 
-mounted() {
-this.getData();
+mounted(){
+setInterval(this.timer, 1000);
 
+},
+
+beforeDestroy() {
+clearInterval(this.timer);
 }
 
 
@@ -155,3 +158,41 @@ this.getData();
 
 };
 </script>
+
+<style scoped>
+.h1 {
+font-size: 24;
+font-weight: bold;
+color: #2A9689;
+}
+.h2 {
+font-size: 18;
+font-weight: bold;
+margin-bottom: 10;
+}
+.text-title {
+font-weight: bold;
+font-size: 16;
+}
+.text-description {
+font-size: 14;
+color: #555;
+}
+.status-icon {
+font-size: 18;
+margin-left: 10;
+color: #4B5563;
+}
+.fab {
+background-color: #2A9689;
+color: white;
+border-radius: 50;
+height: 60;
+width: 60;
+font-size: 22;
+vertical-align: middle;
+text-align: center;
+elevation: 8;
+margin-bottom:50px;
+}
+</style>

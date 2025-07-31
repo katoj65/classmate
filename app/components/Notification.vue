@@ -34,7 +34,11 @@ title:'Notification'
 
 methods: {
 settings(){
-this.$navigateTo(Settings);
+this.$navigateTo(Settings,{transition: {
+name: 'slide',
+duration: 300,
+curve: 'easeInOut'
+}});
 },
 
 

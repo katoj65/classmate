@@ -1,9 +1,8 @@
 <template>
 <Page>
-<ActionBar  :title="title!=null?title:'Classmate'" backgroundColor="#2A9689" style="color:#fff;">
+<ActionBar title="Subject" backgroundColor="#2A9689" color="#fff">
 
-
-<ActionItem  ios.position="right" android.position="actionBar" @tap="settings">
+<ActionItem  ios.position="right" android.position="actionBar" @tap="homeNav">
 <Label class="fas" text.decode="&#xf03a;" style="color:#fff;font-size:20px;padding-left:30px;"/>
 </ActionItem>
 
@@ -17,64 +16,144 @@
 </ActionItem>
 </ActionBar>
 
-<GridLayout>
 <ScrollView>
+<StackLayout padding="10" spacing="15">
+<Label :text="subject.name" class="h2" />
 
-
-
-
-
-
-<StackLayout>
-<StackLayout  borderBottomWidth="1" borderBottomColor="#F3F4F6" v-for="(s,key) in 10" :key="key">
-<GridLayout columns="*, auto" padding="12" borderBottomWidth="1" borderColor="#ccc">
-<Label text="Account" col="0" verticalAlignment="center" class="text-description" />
-<Label class="fas" text.decode="&#xf105;" col="1" verticalAlignment="center" style="font-size:20px;"/>
-</GridLayout>
+<StackLayout
+v-for="(topic,key) in topics"
+:key="key"
+class="topic-card"
+>
+<Label :text="topic.name" class="text-title" />
+<Label :text="topic.description" class="text-description" textWrap="true" />
 </StackLayout>
 
+<Label v-if="topics.length === 0" text="No topics available." class="empty-msg" />
 </StackLayout>
-
-
-
-
-
-
-
-
-
-
-
-
 </ScrollView>
-
-
-</GridLayout>
-
 </Page>
 </template>
 <script>
 
 
-import { StackLayout } from '@nativescript/core';
+import { Http } from '@nativescript/core';
 import Settings from './Settings.vue';
+import Home from './Home.vue';
+import Vue from 'nativescript-vue';
+import { key } from './database/connection.js';
+
 export default {
-name:'Search',
+name:'Subjects',
+
+props:{
+subject:Object
+},
+
 components:{
 Settings,
 
 },
-data(){return{
-title:'Subject'
 
+data(){return{
+title:'Subject',
+isLoading:false,
+topics:[]
 
 }},
+
 methods: {
 settings(){
-this.$navigateTo(Settings);
+this.$navigateTo(Settings,{
+transition: {
+name: 'slide',
+duration: 300,
+curve: 'easeInOut'
+}
+});
 },
 
+
+homeNav(){
+Frame.topmost().navigate({
+create() {
+const page = new Vue({
+render: h => h(Home)
+}).$mount();
+return page.$el.nativeView;
+}
+});
 },
+
+
+async getData(){
+const id=this.subject.id;
+this.isLoading= true;
+await Http.request({
+url: 'https://ycmlubeulbufsfrvbmal.supabase.co/rest/v1/topic?select=*,sub_topic(name,description,id)&subject_id=eq.'+id,
+method: 'GET',
+headers: {
+'apiKey': key,
+'Authorization': 'Bearer ' + key,
+'Content-Type': 'application/json',
+'application': 'json'
+}
+}).then(response=>{
+this.isLoading = false;
+if(response.statusCode === 200) {
+
+this.topics = response.content.toJSON();
+
+}else{
+console.log('Error:', response.statusCode);
+}
+console.log(response.content);
+}).catch(error=>{console.log('Request failed:', error);});
+}
+},
+
+mounted() {
+this.getData();
+
+
+}
+
 
 }
 </script>
+
+<style scoped>
+.h2 {
+font-size: 20;
+font-weight: bold;
+color: #2A9689;
+margin-bottom: 10;
+}
+
+.topic-card {
+
+padding: 15;
+border-radius: 10;
+border-bottom-width: 1;
+border-bottom-color: #e5e7eb;
+}
+
+.topic-title {
+font-size: 16;
+font-weight: bold;
+color: #1f2937;
+}
+
+.topic-description {
+font-size: 14;
+color: #4b5563;
+margin-top: 4;
+}
+
+.empty-msg {
+text-align: center;
+font-size: 16;
+color: #9ca3af;
+margin-top: 20;
+}
+</style>
