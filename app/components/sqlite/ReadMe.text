@@ -16,6 +16,8 @@ sqlite.transaction(cancelTransaction => {
 
 INSERT
 this.db.execSQL("INSERT INTO users (name, email) VALUES (?, ?)", ["Joshua", "joshua@example.com"]);
+
+
 Fetch
 this.db.all("SELECT * FROM users").then(rows => {
   console.log("Users:", rows);
@@ -48,7 +50,7 @@ db.all("PRAGMA table_info(timetable);", [], (err, rows) => {
 
 
 *******
-Delete table
+Drop table
 db.execSQL("DROP TABLE IF EXISTS timetable")
 .then(() => {
 console.log("Table 'timetable' deleted successfully.");

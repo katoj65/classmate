@@ -62,9 +62,10 @@ class="no-shadow-button"
 marginTop="20"
 backgroundColor="#E8FCF3"
 borderRadius="10"
-fontWeight="bold">
+fontWeight="bold"
+@tap="addItemNav">
 <FormattedString>
- <Span text.decode="&#xf055;  " class="fas" style="font-size:17px;"/>
+<Span text.decode="&#xf055;  " class="fas" style="font-size:17px;"/>
 <Span text="Add subject" style="font-size:17px;">
 </Span>
 </FormattedString>
@@ -87,7 +88,7 @@ text.decode="&#xf1d8;"
 class="fab fas"
 row="0"
 col="0"
-@tap="onFabTap"
+@tap="askAiNav"
 horizontalAlignment="right"
 verticalAlignment="bottom"
 padding="15"
@@ -99,16 +100,19 @@ margin="20"
 </template>
 
 <script>
-
-
+import AddTimeTable from './AddTimeTable.vue';
 import Class from './Class.vue';
 import Time from './controllers/time';
 import Sqlite from 'nativescript-sqlite';
-
+import AskAi from './AskAi.vue';
+import Test from './Test.vue';
 export default {
 name: 'Welcome',
 components: {
-Class
+Class,
+AddTimeTable,
+AskAi,
+Test
 },
 
 data() {
@@ -175,11 +179,6 @@ this.greetings = 'Good Evening';
 
 },
 
-
-
-
-
-
 async initaliseDatabase(){
 if(!Sqlite.exists("classmate.db")) {
 console.log("Creating new DB...");
@@ -201,11 +200,34 @@ this.row.myTimetable=timeTableData;
 }).catch(error=>console.error("Error querying timetable:", error));
 }).catch((error)=>{
 console.error("Error creating DB:", error);});
+},
 
-
-
-
+addItemNav(){
+this.$navigateTo(AddTimeTable,{
+transition: {
+name: 'slide',
+duration: 300,
+curve: 'easeInOut'
 }
+});
+},
+
+askAiNav(){
+this.$navigateTo(Test,{
+transition: {
+name: 'slide',
+duration: 300,
+curve: 'easeInOut'
+}
+});
+}
+
+
+
+
+
+
+
 
 },
 
@@ -213,11 +235,6 @@ mounted(){
 setInterval(this.timer, 1000);
 this.initaliseDatabase();
 },
-
-
-
-
-
 
 
 
