@@ -1,6 +1,6 @@
 <template>
 <Page class="page">
-<ActionBar backgroundColor="#2A9689" class="action-bar">
+<ActionBar backgroundColor="#2A9689" class="action-bar" flat="true">
 
 <!-- Centered Title -->
 <StackLayout horizontalAlignment="center" width="100%">
@@ -15,7 +15,7 @@ textAlignment="center" fontSize="25" />
 <StackLayout padding="32" spacing="24" verticalAlignment="center" backgroundColor="#2A9689" v-if="screen === 0">
 
 
-<Label text.decode="&#xf076;" class="fas" color="white" fontSize="50" horizontalAlignment="center" />
+<Label text.decode="&#xf076;" class="fas" fontSize="50" color="white" textAlignment="center"/>
 
 
 <!-- Title -->
@@ -47,12 +47,9 @@ class="btn-primary"
 />
 
 <!-- Sign Up Link -->
-<Label
-text="Don't have an account? Sign up"
-textAlignment="center"
-class="link"
+<Label text="Don't have an account? Sign up" textAlignment="center" class="link"
 @tap="screen = 1"
- color="White"/>
+color="White"/>
 
 </StackLayout>
 
@@ -60,29 +57,31 @@ class="link"
 <StackLayout padding="32" spacing="24" verticalAlignment="center" backgroundColor="#2A9689" v-else>
 
 
-    <Label text.decode="&#xf076;" class="fas" color="white" fontSize="50" horizontalAlignment="center" />
+<Label text.decode="&#xf076;" class="fas" fontSize="50" color="white" textAlignment="center"/>
 
 
-    <!-- Title -->
-    <Label text="Register Now" textAlignment="center" class="title" />
+<!-- Title -->
+<Label text="Register Now" textAlignment="center" class="title" />
 
-    <!-- Email Field -->
-    <TextField
-    v-model="email"
-    hint="Email"
-    keyboardType="email"
-    autocorrect="false"
-    autocapitalizationType="none"
-    class="input"
-    />
-
-
+<user-error :error="regError"/>
 <!-- Email Field -->
 <TextField
-v-model="email"
-hint="Email"
-keyboardType="email"
+v-model="fname"
+hint="First name"
+keyboardType="default"
 autocorrect="false"
+autocapitalizationType="none"
+secure="false"
+class="input"
+/>
+
+
+<TextField
+v-model="lname"
+hint="Last name"
+keyboardType="default"
+autocorrect="false"
+secure="false"
 autocapitalizationType="none"
 class="input"
 />
@@ -92,7 +91,7 @@ class="input"
 
 <!-- Email Field -->
 <TextField
-v-model="email"
+v-model="user_email"
 hint="Email"
 keyboardType="email"
 autocorrect="false"
@@ -101,30 +100,30 @@ class="input"
 />
 
 
-    <!-- Password Field -->
-    <TextField
-    v-model="password"
-    hint="Password"
-    secure="true"
-    class="input"
-    />
+<!-- Password Field -->
+<TextField
+v-model="user_password"
+hint="Password"
+secure="true"
+class="input"
+/>
 
-    <!-- Login Button -->
-    <Button
-    text="Sign Up"
-    @tap="login"
-    class="btn-primary"
-    />
+<!-- Login Button -->
+<Button
+text="Sign Up"
+@tap="signup"
+class="btn-primary"
+/>
 
-    <!-- Sign Up Link -->
-    <Label
-    text="Have an account? Sign in"
-    textAlignment="center"
-    class="link"
-    @tap="screen=0"
-     color="White"/>
+<!-- Sign Up Link -->
+<Label
+text="Have an account? Sign in"
+textAlignment="center"
+class="link"
+@tap="screen=0"
+color="White"/>
 
-    </StackLayout>
+</StackLayout>
 
 
 
@@ -134,14 +133,32 @@ class="input"
 </template>
 
 <script>
-import { screen } from '@nativescript/core/platform';
+import UserError from './templates/UserError.vue';
 import Auth from './api/authApi';
+import { SecureStorage } from "@heywhy/ns-secure-storage";
+
 export default {
+components: { UserError },
 data() {
 return {
 screen:0,
+message:null,
+regError:null,
+isLoading:null,
+isLoading2:null,
+
+//login attributes
 email: 'katoj65@gmail.com',
 password: '1234567890',
+
+//registration attributes
+fname:'joshua',
+lname:'kato',
+user_email:'katoj65@gmail.com',
+user_password:'1234567890',
+
+
+
 };
 },
 
@@ -159,12 +176,58 @@ return;
 const auth = new Auth;
 auth.loginApi(this.email, this.password)
 .then((response)=>{
-
 console.log(response);
-
-
 }).catch(error=>{console.log(error);});
 
+},
+
+
+
+
+
+
+
+signup() {
+this.regError = null;
+if (!this.user_email || !this.user_password || !this.fname || !this.lname) {
+alert('Please fill in all fields.');
+return;
+}
+const auth = new Auth;
+auth.signupApi(this.fname, this.lname, this.user_email, this.user_password)
+.then((response) => {
+
+if(response.statusCode === 200) {
+const data=response.content ? response.content.toJSON() : {};
+const token=data.access_token;
+//get user info
+auth.getUser(token)
+.then((user)=>{
+console.log(user);
+})
+.catch((error)=>{
+console.log(error);});
+
+}else if(response.statusCode === 422) {
+this.regError='Email already registered.';
+}
+
+
+}).catch(error => {
+console.log(error);
+});
+
+
+
+
+
+
+
+
+
+
+
+
 
 },
 
@@ -174,9 +237,10 @@ console.log(response);
 
 
 
-goToSignup() {
-alert("Navigate to Signup Page");
-},
+
+
+
+
 },
 };
 </script>

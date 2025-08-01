@@ -4,8 +4,10 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
+    "@heywhy/ns-secure-storage": "^0.3.0",
     "@nativescript/core": "~8.9.0",
     "@nativescript/theme": "^3.1.0",
+    "nativescript-secure-storage": "^2.6.2",
     "nativescript-sqlite": "^2.8.6",
     "nativescript-vue": "~2.9.3"
   },
