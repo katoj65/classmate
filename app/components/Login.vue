@@ -136,9 +136,10 @@ color="White"/>
 import UserError from './templates/UserError.vue';
 import Auth from './api/authApi';
 import { SecureStorage } from "@heywhy/ns-secure-storage";
+import CreateProfile from './CreateProfile.vue';
 
 export default {
-components: { UserError },
+components: { UserError, CreateProfile },
 data() {
 return {
 screen:0,
@@ -200,14 +201,36 @@ auth.signupApi(this.fname, this.lname, this.user_email, this.user_password)
 if(response.statusCode === 200) {
 const data=response.content ? response.content.toJSON() : {};
 const token=data.access_token;
+
 //get user info
-auth.getUser(token)
+auth.getUserApi(token)
 .then((user)=>{
-console.log(user);
+
+const user_content=user.content.toJSON();
+const secureStorage = new SecureStorage();
+secureStorage.set({key: 'access_token',value:token});
+
+//store user details as after successful registration
+const user_account=user_content.user_metadata;
+secureStorage.set({key: 'user', value: JSON.stringify(user_account)});
+
+console.log('User details:', user_account);
+
+this.$navigateTo(CreateProfile,{
+transition: {
+name: 'slide',
+duration: 300,
+curve: 'easeInOut'
+},
+clearHistory: true
+});
+
+
+
+
 })
 .catch((error)=>{
 console.log(error);});
-
 }else if(response.statusCode === 422) {
 this.regError='Email already registered.';
 }
