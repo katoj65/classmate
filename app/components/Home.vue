@@ -4,21 +4,19 @@
 <ActionItem ios.position="right" android.position="actionBar" @tap="homeNav">
 <Label class="fas" text.decode="&#xf518;" style="color:#fff;font-size:20px;" />
 </ActionItem>
-
 <ActionItem ios.position="right" android.position="actionBar">
 <Label class="fas" text.decode="&#xf0f3;" style="color:#fff;font-size:20px;padding-left:30px;" />
 </ActionItem>
-
 <ActionItem ios.position="right" android.position="actionBar">
 <Label class="fas" text.decode="&#xf142;" style="color:#fff;font-size:20px;padding-left:30px;" />
 </ActionItem>
-
 </ActionBar>
 
 <GridLayout rows="*" columns="*">
 
 <!-- Main content -->
 <ScrollView row="0" col="0">
+
 <StackLayout padding="20" spacing="20">
 
 <!-- Welcome Message -->
@@ -80,45 +78,48 @@ fontWeight="bold"
 
 
 </StackLayout>
+<!-- <StackLayout v-else>
+<create-profile :user="row.user" />
+</StackLayout> -->
+
 </ScrollView>
 
+
+
+
 <!-- FAB -->
-<Button
-text.decode="&#xf1d8;"
-class="fab fas"
-row="0"
-col="0"
-@tap="askAiNav"
-horizontalAlignment="right"
-verticalAlignment="bottom"
-padding="15"
-margin="20"
-/>
+<Button text.decode="&#xf1d8;" class="fab fas" row="0" col="0" @tap="askAiNav" horizontalAlignment="right" verticalAlignment="bottom" padding="15" margin="20" v-if="row.user!=null && row.user.profile_status=='completed'"/>
 
 </GridLayout>
 </Page>
 </template>
 
 <script>
+import { SecureStorage } from "@heywhy/ns-secure-storage";
 import AddTimeTable from './AddTimeTable.vue';
 import Class from './Class.vue';
 import Time from './controllers/time';
 import Sqlite from 'nativescript-sqlite';
 import AskAi from './AskAi.vue';
 import Test from './Test.vue';
+// import CreateProfile from "./templates/CreateProfile.vue";
+
+
 export default {
 name: 'Welcome',
 components: {
 Class,
 AddTimeTable,
 AskAi,
-Test
+Test,
+// CreateProfile
 },
 
 data() {
 return {
 row:{
 myTimetable:[],
+user:null,
 
 },
 
@@ -220,10 +221,14 @@ duration: 300,
 curve: 'easeInOut'
 }
 });
-}
+},
 
-
-
+async userData(){
+const session=new SecureStorage();
+const user=await session.get({key:'user'});
+this.row.user=JSON.parse(user);
+console.log(user);
+},
 
 
 
@@ -232,8 +237,15 @@ curve: 'easeInOut'
 },
 
 mounted(){
+
 setInterval(this.timer, 1000);
 this.initaliseDatabase();
+//create user
+this.userData();
+
+
+
+
 },
 
 

@@ -57,23 +57,9 @@ textAlignment="center"
 <!-- Details -->
 <StackLayout spacing="8" marginBottom="20">
 <Label
-text="Joshua Kato"
-fontSize="20"
-fontWeight="bold"
-textAlignment="center"
-/>
-<Label
-text="katoj65@gmail.com"
-fontSize="14"
-color="#666666"
-textAlignment="center"
-/>
-<Label
-text="Student"
-fontSize="14"
-color="#888888"
-textAlignment="center"
-/>
+:text="user.first_name+' '+user.last_name" fontSize="20" fontWeight="bold" textAlignment="center" style="text-transform: capitalize;"/>
+<Label :text="user.email" fontSize="14" color="#666666" textAlignment="center"/>
+<Label text="Student" fontSize="14" color="#888888" textAlignment="center"/>
 </StackLayout>
 
 
@@ -358,16 +344,16 @@ textAlignment="center"
 import Auth from './api/authApi';
 import Home from './Home.vue';
 export default {
+props:{
+user:Object,
+},
+
+
 data() {
 return {
-
 isLoading: false,
-
-user: {
-first_name: 'Joshua',
-last_name: 'Kato',
-email: 'katoj65@gmail.com',
-role: 'Student'
+row:{
+user:null,
 },
 
 myClass:{
@@ -437,7 +423,6 @@ this.myGender.selected= this.myGender.gender[this.myGender.index];
 }
 },
 
-
 //submit form
 submit(){
 if(!this.form.day || !this.form.month || !this.form.year || !this.form.tel) {
@@ -466,7 +451,8 @@ transition: {
 name: 'slide',
 duration: 300,
 curve: 'easeInOut'
-}
+},
+clearHistory: true,
 });
 
 
@@ -481,12 +467,18 @@ console.log('Error updating profile:', response.statusCode);
 
 
 
+},
+
+
+async getUser(){
+console.log(user);
 }
 
 
+},
 
-
-
+mounted(){
+this.getUser();
 }
 
 

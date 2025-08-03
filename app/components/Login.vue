@@ -109,11 +109,11 @@ class="input"
 />
 
 <!-- Login Button -->
-<Button
-text="Sign Up"
-@tap="signup"
-class="btn-primary"
-/>
+<Button text="Sign Up" @tap="signup" class="btn-primary" v-if="isLoading2==false"/>
+<loader-button-primary title="Sign Up" v-else/>
+
+
+
 
 <!-- Sign Up Link -->
 <Label
@@ -137,16 +137,17 @@ import UserError from './templates/UserError.vue';
 import Auth from './api/authApi';
 import { SecureStorage } from "@heywhy/ns-secure-storage";
 import CreateProfile from './CreateProfile.vue';
+import LoaderButtonPrimary from './templates/LoaderButtonPrimary.vue';
 
 export default {
-components: { UserError, CreateProfile },
+components: { UserError, CreateProfile, LoaderButtonPrimary },
 data() {
 return {
 screen:0,
 message:null,
 regError:null,
-isLoading:null,
-isLoading2:null,
+isLoading:false,
+isLoading2:false,
 
 //login attributes
 email: 'katoj65@gmail.com',
@@ -166,7 +167,6 @@ user_password:'1234567890',
 
 
 methods: {
-
 
 login() {
 if (!this.email || !this.password) {
@@ -191,12 +191,17 @@ console.log(response);
 signup() {
 this.regError = null;
 if (!this.user_email || !this.user_password || !this.fname || !this.lname) {
-alert('Please fill in all fields.');
+this.regError='Please fill in all fields.';
 return;
 }
+
+this.isLoading2 = true;
+
 const auth = new Auth;
 auth.signupApi(this.fname, this.lname, this.user_email, this.user_password)
 .then((response) => {
+
+this.isLoading2=false;
 
 if(response.statusCode === 200) {
 const data=response.content ? response.content.toJSON() : {};
@@ -214,15 +219,16 @@ secureStorage.set({key: 'access_token',value:token});
 const user_account=user_content.user_metadata;
 secureStorage.set({key: 'user', value: JSON.stringify(user_account)});
 
-console.log('User details:', user_account);
-
 this.$navigateTo(CreateProfile,{
 transition: {
 name: 'slide',
 duration: 300,
 curve: 'easeInOut'
 },
-clearHistory: true
+clearHistory: true,
+props:{
+user: user_account
+}
 });
 
 
