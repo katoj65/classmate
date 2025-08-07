@@ -1,19 +1,18 @@
 <template>
-<Page class="page">
-<ActionBar backgroundColor="#2A9689" class="action-bar" flat="true">
-<!-- Centered Title -->
+<Page>
+<ActionBar backgroundColor="#2A9689" flat="true">
 <StackLayout horizontalAlignment="center" width="100%">
 <Label text="Create Profile"
 class="action-title"
 color="white"
 textAlignment="center"
-fontSize="25"
+fontSize="20"
 style="font-weight:bold;" />
 </StackLayout>
 </ActionBar>
 
-<ScrollView>
-
+<!-- Page content here -->
+<ScrollView  v-if="row.user!=null">
 <StackLayout
 padding="20"
 margin="15"
@@ -26,8 +25,9 @@ shadowColor="#000"
 shadowOffsetWidth="0"
 shadowOffsetHeight="2"
 shadowOpacity="0.2"
-shadowRadius="4"
->
+shadowRadius="4">
+
+
 
 <!-- Icon -->
 <StackLayout
@@ -41,320 +41,323 @@ alignItems="center"
 backgroundColor="#E0F2F1"
 horizontalAlignment="center"
 marginBottom="16"
-padding="15"
->
-<Label
-text.decode="&#xf007;"
-class="fas"
-fontWeight="900"
-fontSize="40"
-color="#2A9689"
-textAlignment="center"
+padding="15">
 
-/>
+<Label text.decode="&#xf007;" class="fas" fontWeight="900" fontSize="40" color="#2A9689" textAlignment="center"/>
 </StackLayout>
+
 
 <!-- Details -->
 <StackLayout spacing="8" marginBottom="20">
 <Label
-:text="user.first_name+' '+user.last_name" fontSize="20" fontWeight="bold" textAlignment="center" style="text-transform: capitalize;"/>
-<Label :text="user.email" fontSize="14" color="#666666" textAlignment="center"/>
+:text="''" fontSize="20" fontWeight="bold" textAlignment="center" style="text-transform: capitalize;"/>
+<Label :text="'email'" fontSize="14" color="#666666" textAlignment="center"/>
 <Label text="Student" fontSize="14" color="#888888" textAlignment="center"/>
 </StackLayout>
+
+
 
 
 <StackLayout>
 
 
 
-<!-- Gender selector -->
-<StackLayout padding="0" marginBottom="20">
-<!-- Label -->
-<Label
-text="Gender"
-fontWeight="bold"
-color="#2A9689"
-fontSize="16"
-marginBottom="10"
-/>
-<!-- Selector with arrows -->
-<FlexboxLayout
-flexDirection="row"
-justifyContent="space-between"
-alignItems="center"
-backgroundColor="#ffffff"
-borderRadius="12"
-borderColor="#2A9689"
-borderWidth="1"
-height="50"
-paddingLeft="12"
-paddingRight="12"
->
+    <!-- Gender selector -->
+    <StackLayout padding="0" marginBottom="20">
+    <!-- Label -->
+    <Label
+    text="Gender"
+    fontWeight="bold"
+    color="#2A9689"
+    fontSize="16"
+    marginBottom="10"
+    />
+    <!-- Selector with arrows -->
+    <FlexboxLayout
+    flexDirection="row"
+    justifyContent="space-between"
+    alignItems="center"
+    backgroundColor="#ffffff"
+    borderRadius="12"
+    borderColor="#2A9689"
+    borderWidth="1"
+    height="50"
+    paddingLeft="12"
+    paddingRight="12"
+    >
 
-<!-- Previous Button -->
-<Label
-width="20%"
-text.decode="&#xf104;"
-fontWeight="900"
-fontSize="20"
-color="#2A9689"
-class="fas"
-textAlignment="center"
-horizontalAlignment="center"
-@tap="prevGender"/>
+    <!-- Previous Button -->
+    <Label
+    width="20%"
+    text.decode="&#xf104;"
+    fontWeight="900"
+    fontSize="20"
+    color="#2A9689"
+    class="fas"
+    textAlignment="center"
+    horizontalAlignment="center"
+    @tap="prevGender"/>
 
-<!-- Selected Class Display -->
-<Label :text="myGender.selected"
-fontSize="16"
-fontWeight="bold"
-color="#333"
-width="60%"
-textAlignment="center"
-horizontalAlignment="center"
-/>
+    <!-- Selected Class Display -->
+    <Label :text="myGender.selected"
+    fontSize="16"
+    fontWeight="bold"
+    color="#333"
+    width="60%"
+    textAlignment="center"
+    horizontalAlignment="center"
+    />
 
-<!-- Next Button -->
-<Label
-width="20%"
-text.decode="&#xf105;"
-fontWeight="900"
-fontSize="20"
-color="#2A9689"
-class="fas"
-horizontalAlignment="center"
-textAlignment="center"
-@tap="nextGender"/>
+    <!-- Next Button -->
+    <Label
+    width="20%"
+    text.decode="&#xf105;"
+    fontWeight="900"
+    fontSize="20"
+    color="#2A9689"
+    class="fas"
+    horizontalAlignment="center"
+    textAlignment="center"
+    @tap="nextGender"/>
 
-</FlexboxLayout>
+    </FlexboxLayout>
+    </StackLayout>
+
+
+
+
+
+
+
+
+    <!-- Date of Birth -->
+    <StackLayout padding="0" marginBottom="20">
+    <!-- Label -->
+    <Label
+    text="Date of Birth"
+    fontWeight="bold"
+    color="#2A9689"
+    fontSize="16"
+    marginBottom="6"
+    />
+
+    <!-- Inline Fields -->
+    <FlexboxLayout
+    flexDirection="row"
+    justifyContent="space-between"
+    alignItems="center"
+    gap="12"
+    >
+    <!-- Day -->
+    <TextField
+    hint="DD"
+    backgroundColor="#ffffff"
+    borderRadius="12"
+    padding="12"
+    fontSize="14"
+    color="#333"
+    borderColor="#2A9689"
+    borderWidth="1"
+    width="30%"
+    keyboardType="number"
+    margin="0"
+    maxLength="2"
+    v-model="form.day"
+    />
+
+    <!-- Month -->
+    <TextField
+    hint="MM"
+    backgroundColor="#ffffff"
+    borderRadius="12"
+    padding="12"
+    fontSize="14"
+    color="#333"
+    borderColor="#2A9689"
+    borderWidth="1"
+    width="30%"
+    keyboardType="number"
+    margin="0"
+    maxLength="2"
+    v-model="form.month"
+    />
+
+    <!-- Year -->
+    <TextField
+    hint="YYYY"
+    backgroundColor="#ffffff"
+    borderRadius="12"
+    padding="12"
+    fontSize="14"
+    color="#333"
+    borderColor="#2A9689"
+    borderWidth="1"
+    width="30%"
+    keyboardType="number"
+    margin="0"
+    maxLength="4"
+    v-model="form.year"
+    />
+    </FlexboxLayout>
+    </StackLayout>
+
+    <!-- Phone Number -->
+    <StackLayout padding="0" marginBottom="20">
+    <Label
+    text="Phone Number"
+    fontWeight="bold"
+    color="#2A9689"
+    fontSize="16"
+    marginBottom="6"
+    />
+    <TextField
+    hint="Enter phone number"
+    backgroundColor="#ffffff"
+    borderRadius="12"
+    padding="12"
+    fontSize="14"
+    color="#333"
+    borderColor="#2A9689"
+    borderWidth="1"
+    height="50"
+    keyboardType="phone"
+    margin="0"
+    v-model="form.tel"
+    />
+    </StackLayout>
+
+
+
+    <!-- School -->
+    <StackLayout padding="0" marginBottom="20">
+    <Label
+    text="School"
+    fontWeight="bold"
+    color="#2A9689"
+    fontSize="16"
+    marginBottom="6"
+    />
+    <TextField
+    hint="Enter school name"
+    backgroundColor="#ffffff"
+    borderRadius="12"
+    padding="12"
+    fontSize="14"
+    color="#333"
+    borderColor="#2A9689"
+    borderWidth="1"
+    height="50"
+    autocorrect="false"
+    autocapitalizationType="none"
+    margin="0"
+    v-model="form.school"
+    />
+    </StackLayout>
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Class selector -->
+    <StackLayout padding="0" marginBottom="20">
+    <!-- Label -->
+    <Label
+    text="Class"
+    fontWeight="bold"
+    color="#2A9689"
+    fontSize="16"
+    marginBottom="10"
+    />
+    <!-- Selector with arrows -->
+    <FlexboxLayout
+    flexDirection="row"
+    justifyContent="space-between"
+    alignItems="center"
+    backgroundColor="#ffffff"
+    borderRadius="12"
+    borderColor="#2A9689"
+    borderWidth="1"
+    height="50"
+    paddingLeft="12"
+    paddingRight="12"
+    >
+
+    <!-- Previous Button -->
+    <Label
+    width="20%"
+    text.decode="&#xf104;"
+    fontWeight="900"
+    fontSize="20"
+    color="#2A9689"
+    class="fas"
+    textAlignment="center"
+    horizontalAlignment="center"
+    @tap="prevClass"/>
+
+    <!-- Selected Class Display -->
+    <Label :text="myClass.selected"
+    fontSize="16"
+    fontWeight="bold"
+    color="#333"
+    width="60%"
+    textAlignment="center"
+    horizontalAlignment="center"
+    />
+
+    <!-- Next Button -->
+    <Label
+    width="20%"
+    text.decode="&#xf105;"
+    fontWeight="900"
+    fontSize="20"
+    color="#2A9689"
+    class="fas"
+    horizontalAlignment="center"
+    textAlignment="center"
+    @tap="nextClass"/>
+
+    </FlexboxLayout>
+    </StackLayout>
+
+    <!-- Save Button -->
+    <Button text="Save" backgroundColor="#2A9689" color="#ffffff" fontSize="16" fontWeight="bold" height="50" borderRadius="12" margin="0" marginTop="24" @tap="submit"/>
+
+    </StackLayout>
+
+
+
+
+
+
+
+
+
+
+
+
 </StackLayout>
-
-
-
-
-
-
-
-
-<!-- Date of Birth -->
-<StackLayout padding="0" marginBottom="20">
-<!-- Label -->
-<Label
-text="Date of Birth"
-fontWeight="bold"
-color="#2A9689"
-fontSize="16"
-marginBottom="6"
-/>
-
-<!-- Inline Fields -->
-<FlexboxLayout
-flexDirection="row"
-justifyContent="space-between"
-alignItems="center"
-gap="12"
->
-<!-- Day -->
-<TextField
-hint="DD"
-backgroundColor="#ffffff"
-borderRadius="12"
-padding="12"
-fontSize="14"
-color="#333"
-borderColor="#2A9689"
-borderWidth="1"
-width="30%"
-keyboardType="number"
-margin="0"
-maxLength="2"
-v-model="form.day"
-/>
-
-<!-- Month -->
-<TextField
-hint="MM"
-backgroundColor="#ffffff"
-borderRadius="12"
-padding="12"
-fontSize="14"
-color="#333"
-borderColor="#2A9689"
-borderWidth="1"
-width="30%"
-keyboardType="number"
-margin="0"
-maxLength="2"
-v-model="form.month"
-/>
-
-<!-- Year -->
-<TextField
-hint="YYYY"
-backgroundColor="#ffffff"
-borderRadius="12"
-padding="12"
-fontSize="14"
-color="#333"
-borderColor="#2A9689"
-borderWidth="1"
-width="30%"
-keyboardType="number"
-margin="0"
-maxLength="4"
-v-model="form.year"
-/>
-</FlexboxLayout>
-</StackLayout>
-
-<!-- Phone Number -->
-<StackLayout padding="0" marginBottom="20">
-<Label
-text="Phone Number"
-fontWeight="bold"
-color="#2A9689"
-fontSize="16"
-marginBottom="6"
-/>
-<TextField
-hint="Enter phone number"
-backgroundColor="#ffffff"
-borderRadius="12"
-padding="12"
-fontSize="14"
-color="#333"
-borderColor="#2A9689"
-borderWidth="1"
-height="50"
-keyboardType="phone"
-margin="0"
-v-model="form.tel"
-/>
-</StackLayout>
-
-
-
-<!-- School -->
-<StackLayout padding="0" marginBottom="20">
-<Label
-text="School"
-fontWeight="bold"
-color="#2A9689"
-fontSize="16"
-marginBottom="6"
-/>
-<TextField
-hint="Enter school name"
-backgroundColor="#ffffff"
-borderRadius="12"
-padding="12"
-fontSize="14"
-color="#333"
-borderColor="#2A9689"
-borderWidth="1"
-height="50"
-autocorrect="false"
-autocapitalizationType="none"
-margin="0"
-v-model="form.school"
-/>
-</StackLayout>
-
-
-
-
-
-
-
-
-
-
-
-<!-- Class selector -->
-<StackLayout padding="0" marginBottom="20">
-<!-- Label -->
-<Label
-text="Class"
-fontWeight="bold"
-color="#2A9689"
-fontSize="16"
-marginBottom="10"
-/>
-<!-- Selector with arrows -->
-<FlexboxLayout
-flexDirection="row"
-justifyContent="space-between"
-alignItems="center"
-backgroundColor="#ffffff"
-borderRadius="12"
-borderColor="#2A9689"
-borderWidth="1"
-height="50"
-paddingLeft="12"
-paddingRight="12"
->
-
-<!-- Previous Button -->
-<Label
-width="20%"
-text.decode="&#xf104;"
-fontWeight="900"
-fontSize="20"
-color="#2A9689"
-class="fas"
-textAlignment="center"
-horizontalAlignment="center"
-@tap="prevClass"/>
-
-<!-- Selected Class Display -->
-<Label :text="myClass.selected"
-fontSize="16"
-fontWeight="bold"
-color="#333"
-width="60%"
-textAlignment="center"
-horizontalAlignment="center"
-/>
-
-<!-- Next Button -->
-<Label
-width="20%"
-text.decode="&#xf105;"
-fontWeight="900"
-fontSize="20"
-color="#2A9689"
-class="fas"
-horizontalAlignment="center"
-textAlignment="center"
-@tap="nextClass"/>
-
-</FlexboxLayout>
-</StackLayout>
-
-<!-- Save Button -->
-<Button text="Save" backgroundColor="#2A9689" color="#ffffff" fontSize="16" fontWeight="bold" height="50" borderRadius="12" margin="0" marginTop="24" @tap="submit"/>
-
-</StackLayout>
-</StackLayout>
-
 </ScrollView>
 </Page>
 </template>
-
 <script>
+import { SecureStorage } from "@heywhy/ns-secure-storage";
 import Auth from './api/authApi';
 import Home from './Home.vue';
 export default {
-props:{
-user:Object,
-},
-
-
-data() {
-return {
+name: 'CreateProfile',
+components:{Home},
+data(){return{
 isLoading: false,
 row:{
 user:null,
 },
+
 
 myClass:{
 classes: ['Senior One', 'Senior Two', 'Senior Three', 'Senior Four', 'Senior Five', 'Senior Six'],
@@ -378,15 +381,17 @@ school:'Kikaaya College School',
 
 formError:null,
 
-}
-},
 
 
-
-
+}},
 
 
 methods: {
+async getUserData(){
+const user=this.$store.state.user;
+this.row.user=user;
+},
+
 //class
 prevClass() {
 if(this.myClass.index ===this.myClass.classes.length){
@@ -423,6 +428,8 @@ this.myGender.selected= this.myGender.gender[this.myGender.index];
 }
 },
 
+
+
 //submit form
 submit(){
 if(!this.form.day || !this.form.month || !this.form.year || !this.form.tel) {
@@ -443,8 +450,23 @@ school: this.form.school
 const auth = new Auth;
 auth.updateUserMetadata(input)
 .then((response)=>{
-console.log(response.statusCode);
 if(response.statusCode === 200) {
+
+//update secure storrage
+const secureStorage = new SecureStorage();
+secureStorage.get({key:'user'}).then((session)=>{
+let data=JSON.parse(session);
+//get current data from supabase
+const metadata=JSON.parse(response.content);
+const profile=metadata.user_metadata;
+data.gender=profile.gender;
+data.dob=profile.dob;
+data.class=profile.class;
+data.school=profile.school;
+data.tel=profile.tel;
+data.profile_staus="completed";
+
+}).catch((error)=>{console.log(error)});
 
 this.$navigateTo(Home,{
 transition: {
@@ -470,17 +492,27 @@ console.log('Error updating profile:', response.statusCode);
 },
 
 
-async getUser(){
-console.log(user);
-}
 
 
 },
 
+
 mounted(){
-this.getUser();
+this.getUserData();
 }
+
+
+
+
+
+
 
 
 };
 </script>
+
+  <style scoped>
+  .action-title {
+    font-weight: bold;
+  }
+  </style>

@@ -78,7 +78,7 @@ fontWeight="bold"
 
 
 </StackLayout>
-<!-- <StackLayout v-else>
+<!-- <StackLayout>
 <create-profile :user="row.user" />
 </StackLayout> -->
 
@@ -88,14 +88,21 @@ fontWeight="bold"
 
 
 <!-- FAB -->
-<Button text.decode="&#xf1d8;" class="fab fas" row="0" col="0" @tap="askAiNav" horizontalAlignment="right" verticalAlignment="bottom" padding="15" margin="20" v-if="row.user!=null && row.user.profile_status=='completed'"/>
+<Button text.decode="&#xf1d8;" class="fab fas" row="0" col="0" @tap="askAiNav" horizontalAlignment="right" verticalAlignment="bottom" padding="15" margin="20"/>
 
 </GridLayout>
+
+
+
+
+
+
+
+
 </Page>
 </template>
 
 <script>
-import { SecureStorage } from "@heywhy/ns-secure-storage";
 import AddTimeTable from './AddTimeTable.vue';
 import Class from './Class.vue';
 import Time from './controllers/time';
@@ -119,7 +126,7 @@ data() {
 return {
 row:{
 myTimetable:[],
-user:null,
+user:{},
 
 },
 
@@ -223,12 +230,12 @@ curve: 'easeInOut'
 });
 },
 
-async userData(){
-const session=new SecureStorage();
-const user=await session.get({key:'user'});
-this.row.user=JSON.parse(user);
-console.log(user);
-},
+// async userData(){
+// const session=new SecureStorage();
+// const user=await session.get({key:'user'});
+// // this.row.user=JSON.parse(user);
+// // console.log(user);
+// },
 
 
 
@@ -241,7 +248,7 @@ mounted(){
 setInterval(this.timer, 1000);
 this.initaliseDatabase();
 //create user
-this.userData();
+
 
 
 

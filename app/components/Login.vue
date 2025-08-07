@@ -126,9 +126,6 @@ color="White"/>
 </StackLayout>
 
 
-
-
-
 </Page>
 </template>
 
@@ -138,9 +135,12 @@ import Auth from './api/authApi';
 import { SecureStorage } from "@heywhy/ns-secure-storage";
 import CreateProfile from './CreateProfile.vue';
 import LoaderButtonPrimary from './templates/LoaderButtonPrimary.vue';
+import * as ApplicationSettings from '@nativescript/core/application-settings';
+import Home from './Home.vue';
 
 export default {
-components: { UserError, CreateProfile, LoaderButtonPrimary },
+components: { UserError, Home, LoaderButtonPrimary },
+
 data() {
 return {
 screen:0,
@@ -184,11 +184,8 @@ console.log(response);
 
 
 
-
-
-
-
 signup() {
+
 this.regError = null;
 if (!this.user_email || !this.user_password || !this.fname || !this.lname) {
 this.regError='Please fill in all fields.';
@@ -196,51 +193,28 @@ return;
 }
 
 this.isLoading2 = true;
-
 const auth = new Auth;
 auth.signupApi(this.fname, this.lname, this.user_email, this.user_password)
 .then((response) => {
-
 this.isLoading2=false;
-
 if(response.statusCode === 200) {
-const data=response.content ? response.content.toJSON() : {};
+const data=response.content ? response.content.toJSON():{};
 const token=data.access_token;
+ApplicationSettings.setBoolean('isActive', true);
+ApplicationSettings.setString('access_token',token);
 
-//get user info
-auth.getUserApi(token)
-.then((user)=>{
-
-const user_content=user.content.toJSON();
-const secureStorage = new SecureStorage();
-secureStorage.set({key: 'access_token',value:token});
-
-//store user details as after successful registration
-const user_account=user_content.user_metadata;
-secureStorage.set({key: 'user', value: JSON.stringify(user_account)});
-
-this.$navigateTo(CreateProfile,{
+this.$navigateTo(Home,{
 transition: {
 name: 'slide',
 duration: 300,
 curve: 'easeInOut'
-},
-clearHistory: true,
-props:{
-user: user_account
 }
 });
 
 
-
-
-})
-.catch((error)=>{
-console.log(error);});
 }else if(response.statusCode === 422) {
 this.regError='Email already registered.';
 }
-
 
 }).catch(error => {
 console.log(error);
@@ -261,6 +235,59 @@ console.log(error);
 },
 
 
+async getUser(){
+
+
+const session=new SecureStorage();
+const token=await session.get({key:'access_token'});
+if(token==null){
+return;
+}
+
+const auth=new Auth;
+const user= await auth.getUserApi(token);
+if(user){
+const data=JSON.parse(user.content)
+const user_meta=data.user_metadata;
+let status=user_meta?user_meta:{};
+console.log(status.profile_staus);
+
+if(status.profile_staus=='registered'){
+console.log(status);
+
+
+this.$navigateTo(CreateProfile,{
+transiton:{
+name:'slide',
+duration: 300,
+curve: 'easeInOut'
+},
+clearHistory: true,
+props:{
+user:status
+}
+});
+}
+
+
+
+}else{
+console.log('Error');
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
 
 
 
@@ -271,6 +298,13 @@ console.log(error);
 
 
 },
+
+
+
+
+
+
+
 };
 </script>
 

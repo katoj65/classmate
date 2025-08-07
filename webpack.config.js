@@ -1,10 +1,18 @@
 const webpack = require("@nativescript/webpack");
 
 module.exports = (env) => {
-	webpack.init(env);
+  webpack.init(env);
 
-	// Learn how to customize:
-	// https://docs.nativescript.org/webpack
+  webpack.chainWebpack((config) => {
+   
+    if (!config.resolve.fallback) {
+      config.resolve.fallback = {};
+    }
 
-	return webpack.resolveConfig();
+    Object.assign(config.resolve.fallback, {
+      inspector: false,
+    });
+  });
+
+  return webpack.resolveConfig();
 };

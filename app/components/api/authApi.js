@@ -20,12 +20,6 @@ password: password
 });
 }
 
-
-
-
-
-
-
 async signupApi(fname,lname, email, password) {
 return await Http.request({
 url: 'https://ycmlubeulbufsfrvbmal.supabase.co/auth/v1/signup',
@@ -52,8 +46,6 @@ profile_staus:'registered'
 });
 }
 
-
-
 async getUserApi(token) {
 return await Http.request({
 url: 'https://ycmlubeulbufsfrvbmal.supabase.co/auth/v1/user',
@@ -66,11 +58,7 @@ headers: {
 });
 }
 
-
-
-
 async updateUserMetadata(input) {
-
 const secureStorage = new SecureStorage();
 const session= await secureStorage.get({key:'access_token'});
 return await Http.request(
@@ -95,6 +83,41 @@ profile_staus:'completed'
 });
 
 
+}
+
+
+async getUserObject(){
+const secureStorage = new SecureStorage();
+const token=await secureStorage.get({key:'access_token'});
+const auth=new Auth;
+const user=[];
+await auth.getUserApi(token)
+.then((response)=>{
+const data=JSON.parse(response.content);
+if(data.code==403){
+return;
+}
+user.push(data.user_metadata);
+})
+.catch((error)=>{console.log(error);});
+return user;
+}
+
+
+
+
+async userSession() {
+const secureStorage = new SecureStorage();
+const token = await secureStorage.get({ key: 'access_token' }); 
+return await Http.request({
+url: 'https://ycmlubeulbufsfrvbmal.supabase.co/auth/v1/user',
+method: 'GET',
+headers: {
+'Content-Type': 'application/json',
+'apikey': key,
+'Authorization': 'Bearer ' + token
+}
+});
 }
 
 

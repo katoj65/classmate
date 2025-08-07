@@ -39,8 +39,8 @@ textAlignment="center"
 
 <!-- Details -->
 <StackLayout spacing="8" marginBottom="20">
-<Label :text="user.first_name+' '+user.last_name" fontSize="20" fontWeight="bold" textAlignment="center" style="text-transform: capitalize;"/>
-<Label :text="user.email" fontSize="14" color="#666666" textAlignment="center"/>
+<!-- <Label :text="user.first_name+' '+user.last_name" fontSize="20" fontWeight="bold" textAlignment="center" style="text-transform: capitalize;"/>
+<Label :text="user.email" fontSize="14" color="#666666" textAlignment="center"/> -->
 <Label text="Student" fontSize="14" color="#888888" textAlignment="center"/>
 </StackLayout>
 <StackLayout padding="20">
