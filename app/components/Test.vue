@@ -1,13 +1,13 @@
 <template>
 <Page>
-<Label text="Show some data" @tap="getData"></Label>
+<Label text="Show some data"></Label>
 
 
 
 
 </Page>
 </template>
-<script>
+
 import subjectApi from './api/subjectApi';
 export default {
 data(){

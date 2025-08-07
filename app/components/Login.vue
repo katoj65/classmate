@@ -208,8 +208,9 @@ this.$navigateTo(Home,{
 transition: {
 name: 'slide',
 duration: 300,
-curve: 'easeInOut'
-}
+curve: 'easeInOut',
+},
+clearHistory: true,
 });
 
 }else if(response.statusCode === 422) {

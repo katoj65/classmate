@@ -12,7 +12,7 @@
 </ActionItem>
 </ActionBar>
 
-<GridLayout rows="*" columns="*">
+<GridLayout rows="*" columns="*" v-if="row.user.profile_staus=='complete'">
 
 <!-- Main content -->
 <ScrollView row="0" col="0">
@@ -92,7 +92,9 @@ fontWeight="bold"
 
 </GridLayout>
 
-
+<GridLayout rows="*" columns="*" v-else>
+<create-student-profile :user="row.user"/>
+</GridLayout>
 
 
 
@@ -109,8 +111,8 @@ import Time from './controllers/time';
 import Sqlite from 'nativescript-sqlite';
 import AskAi from './AskAi.vue';
 import Test from './Test.vue';
-// import CreateProfile from "./templates/CreateProfile.vue";
 import * as ApplicationSettings from '@nativescript/core/application-settings';
+import CreateStudentProfile from './templates/CreateStudentProfile.vue';
 
 export default {
 name: 'Welcome',
@@ -119,7 +121,7 @@ Class,
 AddTimeTable,
 AskAi,
 Test,
-// CreateProfile
+CreateStudentProfile
 },
 
 data() {
@@ -230,35 +232,20 @@ curve: 'easeInOut'
 });
 },
 
-// async userData(){
-// const session=new SecureStorage();
-// const user=await session.get({key:'user'});
-// // this.row.user=JSON.parse(user);
-// // console.log(user);
-// },
-
-
 async getUserData(){
-console.log('some information goes here');
-}
-
-
+let user =ApplicationSettings.getString('user',null);
+user=JSON.parse(user);
+this.row.user=user;
+},
 
 
 },
 
 mounted(){
-
 setInterval(this.timer, 1000);
 this.initaliseDatabase();
-//create user
 this.getUserData();
-
-
-
-
 },
-
 
 beforeDestroy() {
 clearInterval(this.timer);
