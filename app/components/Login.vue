@@ -202,6 +202,7 @@ const data=response.content ? response.content.toJSON():{};
 const token=data.access_token;
 ApplicationSettings.setBoolean('isActive', true);
 ApplicationSettings.setString('access_token',token);
+this.createUserSession();
 
 this.$navigateTo(Home,{
 transition: {
@@ -210,7 +211,6 @@ duration: 300,
 curve: 'easeInOut'
 }
 });
-
 
 }else if(response.statusCode === 422) {
 this.regError='Email already registered.';
@@ -287,10 +287,24 @@ console.log('Error');
 
 
 
+},
+
+
+
+
+async createUserSession(){
+const auth=new Auth;
+const data=await auth.userSession();
+if(data.statusCode==200){
+const user_data=JSON.parse(data.content);
+const user=user_data.user_metadata;
+//create session data
+ApplicationSettings.setString('user',JSON.stringify(user));
+}else{
+console.log(data.statusCode);
+return;
 }
-
-
-
+}
 
 
 

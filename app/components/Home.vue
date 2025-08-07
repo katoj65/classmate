@@ -110,7 +110,7 @@ import Sqlite from 'nativescript-sqlite';
 import AskAi from './AskAi.vue';
 import Test from './Test.vue';
 // import CreateProfile from "./templates/CreateProfile.vue";
-
+import * as ApplicationSettings from '@nativescript/core/application-settings';
 
 export default {
 name: 'Welcome',
@@ -238,6 +238,10 @@ curve: 'easeInOut'
 // },
 
 
+async getUserData(){
+console.log('some information goes here');
+}
+
 
 
 
@@ -248,15 +252,12 @@ mounted(){
 setInterval(this.timer, 1000);
 this.initaliseDatabase();
 //create user
-
+this.getUserData();
 
 
 
 
 },
-
-
-
 
 
 beforeDestroy() {

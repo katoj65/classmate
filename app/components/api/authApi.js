@@ -1,6 +1,7 @@
 import { Http} from "@nativescript/core";
 import { key } from "../database/connection";
 import { SecureStorage } from "@heywhy/ns-secure-storage";
+import * as ApplicationSettings from '@nativescript/core/application-settings';
 
 
 class Auth{
@@ -60,7 +61,7 @@ headers: {
 
 async updateUserMetadata(input) {
 const secureStorage = new SecureStorage();
-const session= await secureStorage.get({key:'access_token'});
+const session= ApplicationSettings.getString('access_key',null);
 return await Http.request(
 {
 url: 'https://ycmlubeulbufsfrvbmal.supabase.co/auth/v1/user',
@@ -87,8 +88,7 @@ profile_staus:'completed'
 
 
 async getUserObject(){
-const secureStorage = new SecureStorage();
-const token=await secureStorage.get({key:'access_token'});
+const token= ApplicationSettings.getString('access_key',null);
 const auth=new Auth;
 const user=[];
 await auth.getUserApi(token)
@@ -107,8 +107,7 @@ return user;
 
 
 async userSession() {
-const secureStorage = new SecureStorage();
-const token = await secureStorage.get({ key: 'access_token' }); 
+const token = ApplicationSettings.getString('access_token',null);
 return await Http.request({
 url: 'https://ycmlubeulbufsfrvbmal.supabase.co/auth/v1/user',
 method: 'GET',
