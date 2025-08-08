@@ -307,18 +307,6 @@ user:Object
 
 data(){return{
 isLoading: false,
-myClass:{
-classes: ['Senior One', 'Senior Two', 'Senior Three', 'Senior Four', 'Senior Five', 'Senior Six'],
-index: 0,
-selected:'Senior One',
-},
-
-myGender:{
-index:0,
-gender:['Male','Female','Other'],
-selected:'Male',
-},
-
 
 form:{
 day:'12',
@@ -380,9 +368,14 @@ alert('Please fill in all fields.');
 return;
 }
 
+if(this.form.gender=='Select gender' || this.form.class=='Select class'){
+alert('Select gender and class.');
+return;
+}
+
 const input={
-gender: this.myGender.selected,
-class: this.myClass.selected,
+gender: this.form.gender,
+class: this.form.class,
 day: this.form.day,
 month: this.form.month,
 year: this.form.year,

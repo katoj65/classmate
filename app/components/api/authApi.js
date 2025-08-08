@@ -21,6 +21,11 @@ password: password
 });
 }
 
+
+
+
+
+
 async signupApi(fname,lname, email, password) {
 return await Http.request({
 url: 'https://ycmlubeulbufsfrvbmal.supabase.co/auth/v1/signup',

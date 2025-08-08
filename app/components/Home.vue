@@ -246,10 +246,11 @@ curve: 'easeInOut'
 });
 },
 
-async getUserData(){
+getUserData(){
 let user =ApplicationSettings.getString('user',null);
 user=JSON.parse(user);
 this.row.user=user;
+console.log(user);
 },
 
 

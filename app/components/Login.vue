@@ -20,7 +20,7 @@ textAlignment="center" fontSize="25" />
 
 <!-- Title -->
 <Label text="Welcome Back" textAlignment="center" class="title" />
-
+<user-error :error="regError"/>
 <!-- Email Field -->
 <TextField
 v-model="email"
@@ -44,7 +44,9 @@ class="input"
 text="Login"
 @tap="login"
 class="btn-primary"
-/>
+v-if="isLoading==false" />
+<loader-button-primary title="Login" v-else/>
+
 
 <!-- Sign Up Link -->
 <Label text="Don't have an account? Sign up" textAlignment="center" class="link"
@@ -174,12 +176,52 @@ alert('Please enter both email and password.');
 return;
 }
 
+this.isLoading=true;
+ApplicationSettings.clear();
 const auth = new Auth;
+
 auth.loginApi(this.email, this.password)
 .then((response)=>{
-console.log(response);
-}).catch(error=>{console.log(error);});
+this.isLoading=false;
 
+if(response.statusCode==200){
+
+const data=response.content ? response.content.toJSON():{};
+const token=data.access_token;
+ApplicationSettings.setBoolean('isActive', true);
+ApplicationSettings.setString('access_token',token);
+
+auth.userSession()
+.then((user)=>{
+if(user.statusCode==200){
+const user_data=JSON.parse(user.content);
+const metadata=user_data.user_metadata;
+ApplicationSettings.setString('user',JSON.stringify(metadata));
+this.$navigateTo(Home,{
+transition: {
+name: 'slide',
+duration: 300,
+curve: 'easeInOut',
+},
+clearHistory: true,
+});
+
+
+}else{
+this.regError='Could not fund user';
+console.log(data.statusCode);
+}
+
+})
+.catch((error)=>{console.log(error)});
+
+}else{
+console.log(response.statusCode);
+console.log(response);
+this.regError='Invalid credentials';
+}
+
+}).catch(error=>{console.log(error);});
 },
 
 
