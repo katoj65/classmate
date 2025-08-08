@@ -328,12 +328,22 @@ textAlignment="center"
 
 
 
+
+
+
+
+
+
+
+
+
 </StackLayout>
 </ScrollView>
 </template>
 <script>
 import { SecureStorage } from "@heywhy/ns-secure-storage";
 import Auth from "../api/authApi";
+
 
 export default {
 name: 'CreateProfile',

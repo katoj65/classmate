@@ -1,8 +1,7 @@
 <template>
 <Page class="modal-container">
 <StackLayout class="modal-box" borderRadius="20">
-<Label text="Select gender" marginBottom="10" class="text-description"/>
-
+<Label text="Select class" marginBottom="10" class="text-description"/>
 <Label v-for="(g,key) in gender"
 :key="key"
 :text="g.name"
@@ -16,22 +15,22 @@ alignItems="center"
 @tap="setGender(g.name)"
 class="text-description"
 />
-
-
-
 </StackLayout>
 </Page>
 </template>
-
 <script>
 export default {
 props:{},
 data(){
 return{
 gender:[
-{name:'Male'},
-{name:'Female'},
-{name:'Other'}
+{name:'Senior One'},
+{name:'Senior Two'},
+{name:'Senior Three'},
+{name:'Senior Four'},
+{name:'Senior Five'},
+{name:'Senior Six'},
+
 ],
 
 }},
@@ -44,8 +43,6 @@ this.$modal.close("Closed");
 setGender(gender){
 this.$modal.close(gender);
 }
-
-
 
 
 }

@@ -2,7 +2,6 @@
 <Page class="modal-container">
 <StackLayout class="modal-box" borderRadius="20">
 <Label text="Select gender" marginBottom="10" class="text-description"/>
-
 <Label v-for="(g,key) in gender"
 :key="key"
 :text="g.name"
@@ -16,13 +15,9 @@ alignItems="center"
 @tap="setGender(g.name)"
 class="text-description"
 />
-
-
-
 </StackLayout>
 </Page>
 </template>
-
 <script>
 export default {
 props:{},

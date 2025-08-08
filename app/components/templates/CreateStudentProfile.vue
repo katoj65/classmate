@@ -20,8 +20,8 @@ shadowRadius="4">
 
 <!-- Icon -->
 <StackLayout
-width="90"
-height="90"
+width="60"
+height="60"
 borderRadius="45"
 borderWidth="0"
 borderColor="#2A9689"
@@ -32,7 +32,7 @@ horizontalAlignment="center"
 marginBottom="16"
 padding="15">
 
-<Label text.decode="&#xf007;" class="fas" fontWeight="900" fontSize="40" color="#2A9689" textAlignment="center"/>
+<Label text.decode="&#xf007;" class="fas" fontWeight="900" fontSize="30" color="#2A9689" textAlignment="center"/>
 </StackLayout>
 
 <!-- Details -->
@@ -41,7 +41,6 @@ padding="15">
 :text="user.first_name+' '+user.last_name" fontSize="20" fontWeight="bold" textAlignment="center" style="text-transform: capitalize;"/>
 <Label :text="user.email" fontSize="14" color="#666666" textAlignment="center"/>
 <Label text="Student" fontSize="14" color="#888888" textAlignment="center"/>
-<Label text="Create Your Profile" horizontalAlignment="center" padding="10" marginBottom="0" fontWeight="900" fontSize="15"></Label>
 </StackLayout>
 
 
@@ -69,46 +68,25 @@ padding="15">
     height="50"
     paddingLeft="12"
     paddingRight="12"
+    @tap="selectGenderModel"
     >
 
     <!-- Previous Button -->
-    <Label
-    width="20%"
-    text.decode="&#xf104;"
-    fontWeight="900"
-    fontSize="20"
-    color="#2A9689"
-    class="fas"
-    textAlignment="center"
-    horizontalAlignment="center"
-    @tap="prevGender"/>
+
 
     <!-- Selected Class Display -->
-    <Label :text="myGender.selected"
+    <Label :text="form.gender"
     fontSize="16"
     fontWeight="bold"
     color="#333"
-    width="60%"
+    width="100%"
     textAlignment="center"
     horizontalAlignment="center"
     />
 
     <!-- Next Button -->
-    <Label
-    width="20%"
-    text.decode="&#xf105;"
-    fontWeight="900"
-    fontSize="20"
-    color="#2A9689"
-    class="fas"
-    horizontalAlignment="center"
-    textAlignment="center"
-    @tap="nextGender"/>
-
     </FlexboxLayout>
     </StackLayout>
-
-
 
    <!-- Date of Birth -->
    <StackLayout padding="0" marginBottom="20">
@@ -260,41 +238,22 @@ padding="15">
         height="50"
         paddingLeft="12"
         paddingRight="12"
+        @tap="selectClassModel"
         >
 
-        <!-- Previous Button -->
-        <Label
-        width="20%"
-        text.decode="&#xf104;"
-        fontWeight="900"
-        fontSize="20"
-        color="#2A9689"
-        class="fas"
-        textAlignment="center"
-        horizontalAlignment="center"
-        @tap="prevClass"/>
+
 
         <!-- Selected Class Display -->
-        <Label :text="myClass.selected"
+        <Label :text="form.class"
         fontSize="16"
         fontWeight="bold"
         color="#333"
-        width="60%"
+        width="100%"
         textAlignment="center"
         horizontalAlignment="center"
         />
 
         <!-- Next Button -->
-        <Label
-        width="20%"
-        text.decode="&#xf105;"
-        fontWeight="900"
-        fontSize="20"
-        color="#2A9689"
-        class="fas"
-        horizontalAlignment="center"
-        textAlignment="center"
-        @tap="nextClass"/>
 
         </FlexboxLayout>
         </StackLayout>
@@ -335,7 +294,12 @@ padding="15">
 </ScrollView>
 </template>
 <script>
+import Test from '../Test.vue';
 import Auth from '../api/authApi';
+import SelectGender from '../modals/SelectGender.vue';
+import SelectClass from '../modals/SelectClass.vue';
+
+
 export default {
 props:{
 user:Object
@@ -362,6 +326,8 @@ month:'02',
 year:'1999',
 tel:'0752567534',
 school:'Kikaaya College School',
+gender:'Select gender',
+class:'Select class',
 },
 
 formError:null,
@@ -468,6 +434,21 @@ console.log('Error updating profile:', response.statusCode);
 
 },
 
+
+selectGenderModel(){
+this.$showModal(SelectGender).then((select)=>{
+this.form.gender=select||'Select gender';
+});
+},
+
+
+
+
+selectClassModel(){
+this.$showModal(SelectClass).then((select)=>{
+this.form.class=select||'Select class';
+});
+}
 
 
 
