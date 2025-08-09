@@ -2,7 +2,7 @@
 <page>
 <ActionBar  :title="title!=null?title:'Classmate'" backgroundColor="#2A9689" style="color:#fff;">
 
-<ActionItem  ios.position="right" android.position="actionBar">
+<ActionItem  ios.position="right" android.position="actionBar" @tap="classMenuModel">
 <Label class="fas" text.decode="&#xf038;" style="color:#fff;font-size:20px;"/>
 </ActionItem>
 
@@ -52,6 +52,7 @@ import Notification from './Notification.vue';
 import Search from './Search.vue';
 import Settings from './Settings.vue';
 import Subject from "./Subject.vue";
+import ClassMenu from "./class/ClassMenu.vue";
 
 
 
@@ -87,8 +88,6 @@ async getData(){
 const user=JSON.parse(ApplicationSettings.getString('user',null));
 const userClass=user.class;
 this.title=userClass;
-
-
 
 this.isLoading = true;
 await Http.request({
@@ -174,6 +173,15 @@ curve: 'easeInOut'
 
 aboutNav(){
 this.$navigateTo(About);
+},
+
+classMenuModel(){
+this.$showModal(ClassMenu,{
+fullscreen: true,
+
+}).then((menu)=>{
+
+});
 }
 
 
