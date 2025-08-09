@@ -2,7 +2,7 @@
 <Page>
 <ActionBar title="ClassMate" backgroundColor="#2A9689" color="#fff">
 <ActionItem ios.position="right" android.position="actionBar" @tap="homeNav">
-<Label class="fas" text.decode="&#xf518;" style="color:#fff;font-size:20px;" />
+<Label class="fas" text.decode="&#xf038;" style="color:#fff;font-size:20px;" />
 </ActionItem>
 <ActionItem ios.position="right" android.position="actionBar">
 <Label class="fas" text.decode="&#xf0f3;" style="color:#fff;font-size:20px;padding-left:30px;" />
@@ -20,7 +20,7 @@
 <StackLayout padding="20" spacing="20">
 
 <!-- Welcome Message -->
-<Label :text="this.greetings+' '+userData.first_name+' ! 🎉'" class="h1" textWrap="true"  style="text-transform:capitalize"/>
+<Label :text="this.greetings+' '+userData.first_name+'! 🎉'" class="h1" textWrap="true"  style="text-transform:capitalize"/>
 
 <Label :text="date+' - '+time" class="h2" v-if="date!=null"/>
 
@@ -29,7 +29,7 @@
 <Label  class="h2" @tap="homeNav">
 <FormattedString>
 <Span :text="'You are in: '+userData.class+'  '"/>
-<Span class="fas h1" text.decode="&#xf058;"/>
+<Span class="fas h1" text.decode="&#xf058;" style="font-size:18px;"/>
 </FormattedString>
 </Label>
 
@@ -46,7 +46,14 @@ borderBottomWidth="1"
 borderBottomColor="#E5E7EB"
 
 >
-<Label :text="'📅 ' + entry.day" class="text-title" />
+<Label class="text-title">
+<FormattedString>
+<Span class="fas h1" text.decode="&#xf073;" style="font-size:16px;"/>
+<Span :text="' '+entry.day"/>
+</FormattedString>
+</Label>
+
+
 
 <GridLayout columns="*, auto" rows="auto" verticalAlignment="center">
 <Label :text="'Subject: ' + entry.subject" col="0" class="text-description" />
@@ -133,6 +140,7 @@ import Test from './Test.vue';
 import * as ApplicationSettings from '@nativescript/core/application-settings';
 import CreateStudentProfile from './templates/CreateStudentProfile.vue';
 import Settings from './Settings.vue';
+import { FormattedString } from '@nativescript/core';
 export default {
 name: 'Welcome',
 props:{
@@ -257,10 +265,8 @@ curve: 'easeInOut'
 },
 
 getUserData(){
-// console.log(user);
 const data=JSON.parse(ApplicationSettings.getString('user',null));
 this.userData=data;
-console.log(this.userData);
 },
 settingsNav(){
 this.$navigateTo(Settings,{

@@ -2,8 +2,8 @@
 <page>
 <ActionBar  :title="title!=null?title:'Classmate'" backgroundColor="#2A9689" style="color:#fff;">
 
-<ActionItem  ios.position="right" android.position="actionBar" @tap="searchNav">
-<Label class="fas" text.decode="&#xf002;" style="color:#fff;font-size:20px;"/>
+<ActionItem  ios.position="right" android.position="actionBar">
+<Label class="fas" text.decode="&#xf038;" style="color:#fff;font-size:20px;"/>
 </ActionItem>
 
 <ActionItem ios.position="right" android.position="actionBar" @tap="notificationNav">
@@ -20,11 +20,6 @@
 <ScrollView>
 <StackLayout>
 
-<StackLayout  orientation="horizontal" padding="10 10">
-<Label text="Senior One Class" class="section-title" fontSize="20" fontWeight="bold" width="85%" style="text-align:center;"/>
-<Label  text.decode="&#xf0c9;" width="15%;" class="fas" fontSize="25" @tap="aboutNav" style="color:#8A93A6;"/>
-<!-- <Label :text="row.class"></Label> -->
-</StackLayout>
 
 
 <StackLayout
@@ -38,7 +33,6 @@ v-for="(s, key) in row.subjects" :key="key" orientation="horizontal" padding="12
 </StackLayout>
 </StackLayout>
 </ScrollView>
-<fab/>
 </GridLayout>
 
 
@@ -51,13 +45,14 @@ v-for="(s, key) in row.subjects" :key="key" orientation="horizontal" padding="12
 
 <script>
 import { Http, } from "@nativescript/core";
+import * as ApplicationSettings from '@nativescript/core/application-settings'
 import About from "./About.vue";
 import { key } from './database/connection.js';
 import Notification from './Notification.vue';
 import Search from './Search.vue';
 import Settings from './Settings.vue';
 import Subject from "./Subject.vue";
-import Fab from "./templates/Fab.vue";
+
 
 
 export default {
@@ -67,14 +62,13 @@ Settings,
 Notification,
 Search,
 Subject,
-Fab,
 About
 },
 
 
 data() {
 return {
-title:'ClassMate',
+title:'',
 isLoading:false,
 row:{
 classID:1,
@@ -89,9 +83,16 @@ subjects:[]
 
 methods:{
 async getData(){
+//user details
+const user=JSON.parse(ApplicationSettings.getString('user',null));
+const userClass=user.class;
+this.title=userClass;
+
+
+
 this.isLoading = true;
 await Http.request({
-url: 'https://ycmlubeulbufsfrvbmal.supabase.co/rest/v1/class?select=*,subject(name,description,id)&id=eq.'+this.row.classID,
+url: 'https://ycmlubeulbufsfrvbmal.supabase.co/rest/v1/class?select=*,subject(name,description,id)&name=eq.'+userClass,
 method: 'GET',
 headers: {
 'apikey':key,
