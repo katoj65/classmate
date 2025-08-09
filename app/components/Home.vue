@@ -7,12 +7,12 @@
 <ActionItem ios.position="right" android.position="actionBar">
 <Label class="fas" text.decode="&#xf0f3;" style="color:#fff;font-size:20px;padding-left:30px;" />
 </ActionItem>
-<ActionItem ios.position="right" android.position="actionBar">
+<ActionItem ios.position="right" android.position="actionBar" @tap="settingsNav">
 <Label class="fas" text.decode="&#xf142;" style="color:#fff;font-size:20px;padding-left:30px;" />
 </ActionItem>
 </ActionBar>
 
-<GridLayout rows="*" columns="*" v-if="row.user.profile_staus=='complete'">
+<GridLayout rows="*" columns="*" v-if="userData.profile_status=='completed'">
 
 <!-- Main content -->
 <ScrollView row="0" col="0">
@@ -20,13 +20,18 @@
 <StackLayout padding="20" spacing="20">
 
 <!-- Welcome Message -->
-<Label :text="greetings+' ' + user.name + '! 🎉'" class="h1" textWrap="true" />
+<Label :text="this.greetings+' '+userData.first_name+' ! 🎉'" class="h1" textWrap="true"  style="text-transform:capitalize"/>
 
 <Label :text="date+' - '+time" class="h2" v-if="date!=null"/>
 
 
 <!-- Class Info -->
-<Label :text="'You are in: ' + user.class" class="h2" @tap="homeNav"/>
+<Label  class="h2" @tap="homeNav">
+<FormattedString>
+<Span :text="'You are in: '+userData.class+'  '"/>
+<Span class="fas h1" text.decode="&#xf058;"/>
+</FormattedString>
+</Label>
 
 <!-- Timetable Header -->
 <Label text="📚 Your Reading Timetable" class="h2" />
@@ -93,7 +98,7 @@ fontWeight="bold"
 </GridLayout>
 
 <GridLayout rows="*" columns="*" v-else>
-<create-student-profile :user="row.user"/>
+<create-student-profile :user="user"/>
 </GridLayout>
 
 
@@ -127,9 +132,13 @@ import AskAi from './AskAi.vue';
 import Test from './Test.vue';
 import * as ApplicationSettings from '@nativescript/core/application-settings';
 import CreateStudentProfile from './templates/CreateStudentProfile.vue';
-
+import Settings from './Settings.vue';
 export default {
 name: 'Welcome',
+props:{
+user:Object
+},
+
 components: {
 Class,
 AddTimeTable,
@@ -138,12 +147,13 @@ Test,
 CreateStudentProfile
 },
 
+
 data() {
 return {
+userData:{},
+
 row:{
 myTimetable:[],
-user:{},
-
 },
 
 database:null,
@@ -247,11 +257,21 @@ curve: 'easeInOut'
 },
 
 getUserData(){
-let user =ApplicationSettings.getString('user',null);
-user=JSON.parse(user);
-this.row.user=user;
-console.log(user);
+// console.log(user);
+const data=JSON.parse(ApplicationSettings.getString('user',null));
+this.userData=data;
+console.log(this.userData);
 },
+settingsNav(){
+this.$navigateTo(Settings,{
+transition: {
+name: 'slide',
+duration: 300,
+curve: 'easeInOut'
+}
+});
+},
+
 
 
 },

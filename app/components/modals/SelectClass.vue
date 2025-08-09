@@ -1,6 +1,6 @@
 <template>
 <Page class="modal-container">
-<StackLayout class="modal-box" borderRadius="20">
+<StackLayout class="modal-box">
 <Label text="Select class" marginBottom="10" class="text-description"/>
 <Label v-for="(g,key) in gender"
 :key="key"
@@ -59,7 +59,7 @@ background-color: transparent;
 background-color: white;
 margin: 40;
 padding: 10;
-border-radius: 25;
+border-radius: 50;
 shadow-color: black;
 shadow-opacity: 0.3;
 shadow-radius: 8;

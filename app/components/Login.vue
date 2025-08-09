@@ -171,6 +171,7 @@ user_password:'1234567890',
 methods: {
 
 login() {
+this.regError=null;
 if (!this.email || !this.password) {
 alert('Please enter both email and password.');
 return;
@@ -188,8 +189,11 @@ if(response.statusCode==200){
 
 const data=response.content ? response.content.toJSON():{};
 const token=data.access_token;
+const refresh_token=data.refresh_token;
 ApplicationSettings.setBoolean('isActive', true);
 ApplicationSettings.setString('access_token',token);
+ApplicationSettings.setString('refresh_token',refresh_token);
+
 
 auth.userSession()
 .then((user)=>{
@@ -197,6 +201,7 @@ if(user.statusCode==200){
 const user_data=JSON.parse(user.content);
 const metadata=user_data.user_metadata;
 ApplicationSettings.setString('user',JSON.stringify(metadata));
+
 this.$navigateTo(Home,{
 transition: {
 name: 'slide',
@@ -215,6 +220,7 @@ console.log(data.statusCode);
 })
 .catch((error)=>{console.log(error)});
 
+
 }else{
 console.log(response.statusCode);
 console.log(response);
@@ -225,57 +231,61 @@ this.regError='Invalid credentials';
 },
 
 
+async signup() {
+  this.regError = null;
 
-signup() {
+  if (!this.user_email || !this.user_password || !this.fname || !this.lname) {
+    this.regError = 'Please fill in all fields.';
+    return;
+  }
 
-this.regError = null;
-if (!this.user_email || !this.user_password || !this.fname || !this.lname) {
-this.regError='Please fill in all fields.';
-return;
+  this.isLoading2 = true;
+  const auth = new Auth();
+
+  try {
+    const response = await auth.signupApi(this.fname, this.lname, this.user_email, this.user_password);
+    this.isLoading2 = false;
+
+    if (response.statusCode === 200) {
+      const data = response.content ? response.content.toJSON() : {};
+
+      const userdata = JSON.stringify(data.user.user_metadata);
+      const refresh_token = data.refresh_token;
+      const token = data.access_token;
+
+      ApplicationSettings.setBoolean('isActive', true);
+      ApplicationSettings.setString('access_token', token);
+      ApplicationSettings.setString('user', userdata);
+      ApplicationSettings.setString('refresh_token', refresh_token);
+
+      // Navigate passing props correctly
+      this.$navigateTo(
+        Home,
+        {
+          props: { user: userdata },
+          transition: {
+            name: 'slide',
+            duration: 300,
+            curve: 'easeInOut',
+          },
+          clearHistory: true,
+        }
+      );
+
+    } else if (response.statusCode === 422) {
+      this.regError = 'Email already registered.';
+    } else {
+      this.regError = 'Registration failed. Please try again.';
+    }
+
+  } catch (error) {
+    this.isLoading2 = false;
+    console.error(error);
+    this.regError = 'An error occurred during signup.';
+  }
 }
+,
 
-this.isLoading2 = true;
-const auth = new Auth;
-auth.signupApi(this.fname, this.lname, this.user_email, this.user_password)
-.then((response) => {
-this.isLoading2=false;
-if(response.statusCode === 200) {
-const data=response.content ? response.content.toJSON():{};
-const token=data.access_token;
-ApplicationSettings.setBoolean('isActive', true);
-ApplicationSettings.setString('access_token',token);
-this.createUserSession();
-
-this.$navigateTo(Home,{
-transition: {
-name: 'slide',
-duration: 300,
-curve: 'easeInOut',
-},
-clearHistory: true,
-});
-
-}else if(response.statusCode === 422) {
-this.regError='Email already registered.';
-}
-
-}).catch(error => {
-console.log(error);
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-},
 
 
 async getUser(){

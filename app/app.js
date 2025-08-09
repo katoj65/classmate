@@ -34,10 +34,10 @@ state.user = user;
 }
 });
 
-   
+
 //session goes here
 const session=ApplicationSettings.getBoolean('isActive', false);
-ApplicationSettings.clear();
+//ApplicationSettings.clear();
 
 new Vue({
 store,

@@ -1,6 +1,5 @@
 import { Http} from "@nativescript/core";
 import { key } from "../database/connection";
-import { SecureStorage } from "@heywhy/ns-secure-storage";
 import * as ApplicationSettings from '@nativescript/core/application-settings';
 
 
@@ -46,7 +45,8 @@ tel:'',
 class:'',
 school:'',
 profile_pic:'',
-profile_staus:'registered'
+profile_status:'registered',
+role:'student'
 }
 })
 });
@@ -65,8 +65,7 @@ headers: {
 }
 
 async updateUserMetadata(input) {
-const secureStorage = new SecureStorage();
-const session= ApplicationSettings.getString('access_key',null);
+const session= ApplicationSettings.getString('access_token',null);
 return await Http.request(
 {
 url: 'https://ycmlubeulbufsfrvbmal.supabase.co/auth/v1/user',
@@ -83,7 +82,7 @@ dob:input.day+'-'+input.month+'-'+input.year,
 tel:input.tel,
 class:input.class,
 school:input.school,
-profile_staus:'completed'
+profile_status:'completed'
 }
 })
 });
@@ -124,6 +123,57 @@ headers: {
 });
 }
 
+
+async logoutApi(){
+const token = ApplicationSettings.getString('access_token',null);
+return await Http.request({
+url: 'https://ycmlubeulbufsfrvbmal.supabase.co/auth/v1/logout',
+method: 'GET',
+headers: {
+'Content-Type': 'application/json',
+'apikey': key,
+'Authorization': 'Bearer ' + token
+}
+});
+}
+
+
+
+
+
+async secureToken(){
+const token = ApplicationSettings.getString('access_token',null);
+
+//Check if the token is expired.
+const response = await Http.request({
+url: 'https://ycmlubeulbufsfrvbmal.supabase.co/auth/v1/user',
+method: 'GET',
+headers: {
+'Content-Type': 'application/json',
+'apikey': key,
+'Authorization': 'Bearer ' + token
+}
+});
+
+if(response.statusCode == 200){
+return token;
+}
+
+
+// If token expired, refresh it.
+const refresh = await Http.request({
+url: 'https://ycmlubeulbufsfrvbmal.supabase.co/auth/v1/token?grant_type=refresh_token',
+method: 'POST',
+headers: {
+'Content-Type': 'application/json',
+'apikey': key
+}
+});
+
+
+console.log(refresh);
+
+}
 
 
 
