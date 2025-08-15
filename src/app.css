@@ -1,0 +1,41 @@
+
+
+.fa {
+  font-family: "Material Symbols Rounded Filled", "Material"; font-weight: 400;
+}
+
+.fa2 {
+  font-family: "Material Symbols Outlined Filled", "Material2"; font-weight: 400;
+}
+
+.fa3 {
+  font-family: "Material Symbols Sharp Filled", "Material3"; font-weight: 400;
+}
+
+/* .fa{
+  font-family: "FontAwesome", "fontawesome-webfont"; font-weight: 400;
+} */
+
+.input {
+  height: 50;
+  padding: 12;
+  font-size: 16;
+  background-color: white;
+  border-width: 1;
+  border-color:
+  #BDC3C7;
+  border-radius: 10;
+  color: black;
+  }
+
+  .btn-primary {
+  background-color: black;
+  color: white;
+  font-weight: bold;
+  height: 50;
+  border-radius: 12;
+  }
+
+  Label{
+  color:black;
+  }
