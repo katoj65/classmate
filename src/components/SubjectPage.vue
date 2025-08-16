@@ -1,7 +1,9 @@
 <script setup>
-import { $navigateTo, onMounted, ref, defineProps } from 'nativescript-vue';
+import { $navigateTo, ref, defineProps } from 'nativescript-vue';
 import subjectApi from './api/subjectApi';
 import TopicPage from './TopicPage.vue';
+import Skeleton from './templates/Skeleton.vue';
+import { StackLayout } from '@nativescript/core';
 
 const props=defineProps({
 id : Number
@@ -17,18 +19,37 @@ const topicNav=()=>{
 $navigateTo(TopicPage);
 }
 
-onMounted(async ()=>{
-console.log(props);
+const getTopics = async ()=>{
 
+isLoading.value=true;
 
+try{
 
+const id=props.id;
+const api=new subjectApi();
+let data=await api.getSubject(id);
 
+if(data.statusCode==200){
 
+data=data.content.toJSON();
+data.forEach(element => {
+title.value=element.name||'';
+topics.value=element.topic;
 });
 
+}else{
+console.log(data.statusCode);
+}
+
+isLoading.value=false;
+
+}catch(error){
+coneole.log(error);
+}
 
 
 
+}
 
 
 
@@ -42,12 +63,12 @@ console.log(props);
 
 
 <template>
-    <Page actionBarHidden="true">
+    <Page actionBarHidden="true" @loaded="getTopics">
       <StackLayout backgroundColor="#F9FAFB" height="100%">
 
         <!-- Header -->
         <StackLayout padding="20" backgroundColor="#F0F2F5">
-          <Label text="Mathematics" fontSize="22" fontWeight="bold" color="#1F2937" textAlignment="left"/>
+          <Label :text="title" fontSize="22" fontWeight="bold" color="#1F2937" textAlignment="left"/>
           <Label text="Topics Overview" fontSize="14" color="#6B7280" textAlignment="left" marginTop="6"/>
         </StackLayout>
 
@@ -58,43 +79,40 @@ console.log(props);
 
 
 
-        <!-- Topics List -->
-        <ScrollView height="100%">
-          <StackLayout padding="20" spacing="16">
+<!-- Topics List -->
+<ScrollView height="100%" v-if="isLoading==false">
 
-            <!-- Topic Card -->
-            <StackLayout backgroundColor="#FFFFFF" borderRadius="14" padding="16" @tap="topicNav">
-              <Label text="Algebra" fontSize="18" fontWeight="bold" color="#1F2937" marginBottom="6"/>
-              <Label text="Learn about variables, expressions, and solving equations." fontSize="14" color="#4B5563" textWrap="true"/>
-            </StackLayout>
 
-            <StackLayout backgroundColor="#FFFFFF" borderRadius="14" padding="16" @tap="topicNav">
-              <Label text="Geometry" fontSize="18" fontWeight="bold" color="#1F2937" marginBottom="6"/>
-              <Label text="Understand shapes, angles, and theorems with practical examples." fontSize="14" color="#4B5563" textWrap="true"/>
-            </StackLayout>
 
-            <StackLayout backgroundColor="#FFFFFF" borderRadius="14" padding="16" @tap="topicNav">
-              <Label text="Trigonometry" fontSize="18" fontWeight="bold" color="#1F2937" marginBottom="6"/>
-              <Label text="Explore sine, cosine, tangent, and their applications in solving problems." fontSize="14" color="#4B5563" textWrap="true"/>
-            </StackLayout>
+<StackLayout padding="20" spacing="16" v-if="topics.length>0">
+<!-- Topic Card -->
+<StackLayout backgroundColor="#FFFFFF" borderRadius="14" padding="16" v-for="(t,key) in topics" :key="key">
+<Label :text="t.name" fontSize="18" fontWeight="bold" color="#1F2937" marginBottom="6"/>
+<Label :text="t.description" fontSize="14" color="#4B5563" textWrap="true"/>
+</StackLayout>
 
-            <StackLayout backgroundColor="#FFFFFF" borderRadius="14" padding="16" @tap="topicNav">
-              <Label text="Statistics" fontSize="18" fontWeight="bold" color="#1F2937" marginBottom="6"/>
-              <Label text="Learn about data collection, analysis, and representation with examples." fontSize="14" color="#4B5563" textWrap="true"/>
-            </StackLayout>
 
-          </StackLayout>
-        </ScrollView>
+</StackLayout>
+<StackLayout padding="15" v-else>
+<Label text="No topics"></Label>
+</StackLayout>
 
 
 
 
 
+</ScrollView>
+
+<StackLayout v-else padding="15">
+<Skeleton/>
+</StackLayout>
 
 
 
-      </StackLayout>
-    </Page>
+
+
+</StackLayout>
+</Page>
   </template>
 
   <style scoped>

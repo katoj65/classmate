@@ -1,6 +1,6 @@
 <script setup>
 import classApi from './api/classApi';
-import { $navigateTo, ref, onMounted, } from 'nativescript-vue';
+import { $navigateTo, ref } from 'nativescript-vue';
 import * as ApplicationSettings from '@nativescript/core/application-settings';
 import Skeleton from './templates/Skeleton.vue';
 import SubjectPage from './SubjectPage.vue';
@@ -15,13 +15,14 @@ const isLoading=ref(false);
 const topicsNav=(id)=>{
 $navigateTo(SubjectPage,{
 props:{
-id : id
+id:id
 }
 });
 }
 
 const getSubjects = async ()=>{
 isLoading.value=true;
+
 try{
 const user=JSON.parse(ApplicationSettings.getString('user',null));
 const api = new classApi();
@@ -52,7 +53,6 @@ console.log(error);
 
 
 
-// onMounted(get);
 
 
 
@@ -74,34 +74,29 @@ console.log(error);
 </StackLayout>
 
 <!-- Subjects List -->
-<ScrollView>
+<ScrollView height="100%">
 
 
 
 
 <StackLayout padding="20" spacing="15" v-if="isLoading==false">
-
 <StackLayout v-if="subjects.length>0">
-
-
 <StackLayout padding="15" backgroundColor="white" borderRadius="15" shadowColor="#00000033" shadowOpacity="0.1" shadowRadius="4" @tap="topicsNav(s.id)" v-for="(s,key) in subjects" :key="key">
 <Label :text="s.name" fontSize="18" fontWeight="bold" color="#2C3E50"/>
 <Label :text="s.topic.length>1?'Subject covers '+s.topic.length+' topics':'Subject has no topics'" fontSize="14" color="#7F8C8D" marginTop="4"/>
 </StackLayout>
-
-
 </StackLayout>
-
 <StackLayout v-else>
 <Label text="No subjects"></Label>
 </StackLayout>
-
 </StackLayout>
 <skeleton v-else padding="15"/>
 
 
 </ScrollView>
 </StackLayout>
+
+
 </Page>
 </template>
 <style scoped>
