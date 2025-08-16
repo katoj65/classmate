@@ -1,10 +1,11 @@
 import { Http, } from "@nativescript/core";
 import { key } from "../database/connection";
+class topicApi{
 
-class classApi{
-async userClass(user_class){
+async getTopic(id){
+
 return await Http.request({
-url: 'https://ycmlubeulbufsfrvbmal.supabase.co/rest/v1/class?select=*,subject(id,name,topic(name))&name=eq.'+user_class,
+url: 'https://ycmlubeulbufsfrvbmal.supabase.co/rest/v1/class?select=name,subject(name,topic(name))&name=eq.'+id,
 method: 'GET',
 headers: {
 'apikey':key,
@@ -13,19 +14,29 @@ headers: {
 }
 });
 
-}
-
-
-
-
-
-
-
-
 
 
 
 
 
 }
-export default classApi;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}

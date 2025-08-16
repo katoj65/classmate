@@ -1,6 +1,6 @@
 <script setup>
 import classApi from './api/classApi';
-import { $navigateTo, ref, onMounted } from 'nativescript-vue';
+import { $navigateTo, ref, onMounted, } from 'nativescript-vue';
 import * as ApplicationSettings from '@nativescript/core/application-settings';
 import Skeleton from './templates/Skeleton.vue';
 import SubjectPage from './SubjectPage.vue';
@@ -8,23 +8,25 @@ import SubjectPage from './SubjectPage.vue';
 
 
 
-const title=ref('Subjects available');
+const title=ref('');
 const subjects=ref([]);
 const isLoading=ref(false);
 
-const topicsNav=()=>{
-$navigateTo(SubjectPage);
+const topicsNav=(id)=>{
+$navigateTo(SubjectPage,{
+props:{
+id : id
+}
+});
 }
 
-
-
-
-onMounted(async ()=>{
+const getSubjects = async ()=>{
 isLoading.value=true;
+try{
 const user=JSON.parse(ApplicationSettings.getString('user',null));
 const api = new classApi();
 const response = await api.userClass(user.class);
-isLoading.value=false;
+
 if(response.statusCode==200){
 const data=response.content.toJSON();
 data.forEach(element => {
@@ -36,10 +38,21 @@ subjects.value=element.subject;
 console.log(response.statusCode);
 }
 
+isLoading.value=false;
+
+}catch(error){
+console.log(error);
+}
 
 
-});
 
+}
+
+
+
+
+
+// onMounted(get);
 
 
 
@@ -51,7 +64,7 @@ console.log(response.statusCode);
 
 
 <template>
-<Page actionBarHidden="true">
+<Page actionBarHidden="true" @loaded="getSubjects">
 <StackLayout backgroundColor="#F9FAFB" height="100%">
 
 <!-- Header -->
@@ -68,12 +81,22 @@ console.log(response.statusCode);
 
 <StackLayout padding="20" spacing="15" v-if="isLoading==false">
 
-<StackLayout padding="15" backgroundColor="white" borderRadius="15" shadowColor="#00000033" shadowOpacity="0.1" shadowRadius="4" @tap="topicsNav" v-for="(s,key) in subjects" :key="key">
+<StackLayout v-if="subjects.length>0">
+
+
+<StackLayout padding="15" backgroundColor="white" borderRadius="15" shadowColor="#00000033" shadowOpacity="0.1" shadowRadius="4" @tap="topicsNav(s.id)" v-for="(s,key) in subjects" :key="key">
 <Label :text="s.name" fontSize="18" fontWeight="bold" color="#2C3E50"/>
 <Label :text="s.topic.length>1?'Subject covers '+s.topic.length+' topics':'Subject has no topics'" fontSize="14" color="#7F8C8D" marginTop="4"/>
 </StackLayout>
+
+
 </StackLayout>
 
+<StackLayout v-else>
+<Label text="No subjects"></Label>
+</StackLayout>
+
+</StackLayout>
 <skeleton v-else padding="15"/>
 
 

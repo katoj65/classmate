@@ -1,12 +1,42 @@
 <script setup>
-import { $navigateTo } from 'nativescript-vue';
+import { $navigateTo, onMounted, ref, defineProps } from 'nativescript-vue';
+import subjectApi from './api/subjectApi';
 import TopicPage from './TopicPage.vue';
 
+const props=defineProps({
+id : Number
+});
+
+
+const isLoading=ref(false);
+const title=ref('');
+const topics=ref([]);
 
 
 const topicNav=()=>{
 $navigateTo(TopicPage);
 }
+
+onMounted(async ()=>{
+console.log(props);
+
+
+
+
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
 
 </script>
 
@@ -17,8 +47,8 @@ $navigateTo(TopicPage);
 
         <!-- Header -->
         <StackLayout padding="20" backgroundColor="#F0F2F5">
-          <Label text="Mathematics" fontSize="22" fontWeight="bold" color="#1F2937" textAlignment="center"/>
-          <Label text="Topics Overview" fontSize="14" color="#6B7280" textAlignment="center" marginTop="6"/>
+          <Label text="Mathematics" fontSize="22" fontWeight="bold" color="#1F2937" textAlignment="left"/>
+          <Label text="Topics Overview" fontSize="14" color="#6B7280" textAlignment="left" marginTop="6"/>
         </StackLayout>
 
 
@@ -29,7 +59,7 @@ $navigateTo(TopicPage);
 
 
         <!-- Topics List -->
-        <ScrollView>
+        <ScrollView height="100%">
           <StackLayout padding="20" spacing="16">
 
             <!-- Topic Card -->
