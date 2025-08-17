@@ -1,6 +1,6 @@
 <script setup>
 import classApi from './api/classApi';
-import { $navigateTo, ref, onUnmounted } from 'nativescript-vue';
+import { $navigateTo, ref, reactive, onBeforeMount, onMounted } from 'nativescript-vue';
 import * as ApplicationSettings from '@nativescript/core/application-settings';
 import Skeleton from './templates/Skeleton.vue';
 import SubjectPage from './SubjectPage.vue';
@@ -20,10 +20,10 @@ id:id
 });
 }
 
+
+
 const getSubjects = async ()=>{
 isLoading.value=true;
-
-console.log('subject page');
 
 try{
 const user=JSON.parse(ApplicationSettings.getString('user',null));
@@ -31,17 +31,19 @@ const api = new classApi();
 const response = await api.userClass(user.class);
 
 if(response.statusCode==200){
+isLoading.value=false;
 const data=response.content.toJSON();
 data.forEach(element => {
 title.value=element.name+' subjects.';
 subjects.value=element.subject;
+
+
 });
 
 }else{
 console.log(response.statusCode);
 }
 
-isLoading.value=false;
 
 }catch(error){
 console.log(error);
@@ -50,16 +52,11 @@ console.log(error);
 
 
 
-
-
-onUnmounted(()=>{
-isLoading.value=false;
+onBeforeMount(()=>{
 title.value=null;
 subjects.value=[];
+isLoading.value=false;
 });
-
-
-
 
 
 

@@ -1,5 +1,5 @@
 <script setup>
-import { $navigateTo,defineProps,ref, onUnmounted } from 'nativescript-vue';
+import { $navigateTo,defineProps,ref,onBeforeMount } from 'nativescript-vue';
 import SubtopicPage from './SubtopicPage.vue';
 import topicApi from './api/topicApi';
 import Skeleton from './templates/Skeleton.vue';
@@ -17,16 +17,15 @@ const title=ref(null);
 const subjectName=ref(null);
 const description=ref(null);
 const subTopic=ref([]);
-const isActive=true;
+
 
 
 
 const subtopicNav=(id)=>{
 $navigateTo(SubtopicPage,
 {
-props:{
-id:id
-}
+props:{id:id},
+clearHistory: false
 });
 }
 
@@ -38,9 +37,6 @@ try{
 const api=new topicApi();
 const data=await api.getTopic(id);
 
-if(!isActive){
-return;
-}
 
 if(data.statusCode==200){
 const row=data.content.toJSON();
@@ -59,25 +55,17 @@ console.log(data);
 }catch(error){
 console.log(error);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
 
 
 
 
-onUnmounted(()=>{
+
+
+
+
+
+onBeforeMount(()=>{
 isLoading.value=false;
 title.value=null;
 subTopic.value=[];

@@ -1,5 +1,5 @@
 <script setup>
-import { $navigateTo, ref, defineProps, onBeforeUnmount } from 'nativescript-vue';
+import { $navigateTo, ref, defineProps, reactive, onBeforeMount, onMounted } from 'nativescript-vue';
 import subjectApi from './api/subjectApi';
 import TopicPage from './TopicPage.vue';
 import Skeleton from './templates/Skeleton.vue';
@@ -13,13 +13,11 @@ id : Number
 const isLoading=ref(false);
 const title=ref(null);
 const topics=ref([]);
-const isActive=true;
 
 const topicNav=(id)=>{
 $navigateTo(TopicPage,{
-props:{
-id:id
-}
+props:{id:id},
+clearHistory: false
 });
 }
 
@@ -33,23 +31,26 @@ const id=props.id;
 const api=new subjectApi();
 let data=await api.getSubject(id);
 
-if(!isActive){
-return;
-}
+
 
 if(data.statusCode==200){
-
+isLoading.value=false;
 data=data.content.toJSON();
 data.forEach(element => {
 title.value=element.name||'';
 topics.value=element.topic;
+
+//new data settings
+data.title=element.name;
+data.topics=element.topic;
+
 });
 
 }else{
 console.log(data.statusCode);
 }
 
-isLoading.value=false;
+
 
 }catch(error){
 console.log(error);
@@ -61,8 +62,7 @@ console.log(error);
 
 
 
-
-onBeforeUnmount(()=>{
+onBeforeMount(()=>{
 isLoading.value=false;
 title.value=null;
 topics.value=[];

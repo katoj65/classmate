@@ -84,13 +84,13 @@ const userData=()=>{
 <StackLayout padding="20" backgroundColor="#F9FAFB">
 
 <!-- Greeting / Header -->
-<!-- <Label
+<Label
 :text="greetings+' '+props.user.first_name+' 🎉'"
 fontSize="24"
 fontWeight="bold"
 color="#111827"
 style="text-transform: capitalize;"
-/> -->
+/>
 <Label
 :text="'Today is '+date+' - '+time"
 fontSize="14"
@@ -98,11 +98,11 @@ marginTop="5"
 color="#6B7280"
 />
 
-<!-- <Label marginTop="10" fontSize="15">
+<Label marginTop="10" fontSize="15">
 <FormattedString>
 <Span :text="'You are in  '+user.class+'  '" color="#374151"/>
 </FormattedString>
-</Label> -->
+</Label>
 
 <!-- Section Title -->
 <Label
