@@ -1,63 +1,74 @@
 <script setup>
 import AppLayout from './layouts/AppLayout.vue';
 import * as ApplicationSettings from '@nativescript/core/application-settings';
-import { $navigateTo, ref } from 'nativescript-vue';
+import { $navigateTo, reactive, ref } from 'nativescript-vue';
 import Timetable from './templates/Timetable.vue';
 import CreateProfile from './templates/CreateProfile.vue';
 import AskPage from './AskPage.vue';
 
-
-
-
-const user = ref(null);
-
-// load user safely
-try {
-  const stored = ApplicationSettings.getString('user', null);
-  user.value = stored ? JSON.parse(stored) : null;
-} catch (e) {
-  console.log("Failed to parse user:", e);
-  user.value = null;
-}
-
 const aiNav = () => {
   $navigateTo(AskPage);
+};
+
+const isLoading = ref(false);
+const row = reactive({
+  user: null,
+  status: null,
+});
+
+const getUserData = () => {
+  isLoading.value = true;
+  try {
+    const store = ApplicationSettings.getString('user', null);
+
+    const data = store ? JSON.parse(store) : null;
+
+    if (data) {
+      row.user = data;
+      row.status = data.profile_status ?? null;
+    } else {
+      row.user = null;
+      row.status = null;
+    }
+
+    console.log("User Data:", row);
+  } catch (e) {
+    console.error("Error parsing user data", e);
+    row.user = null;
+    row.status = null;
+  } finally {
+    isLoading.value = false;
+  }
 };
 </script>
 
 <template>
-  <Page actionBarHidden="true">
-    <GridLayout rows="*" columns="*">
-      <app-layout>
-        <!-- Show create profile if no user OR profile not completed -->
-        <create-profile v-if="!user || user.profile_status !== 'completed'" :user="user" />
+<Page actionBarHidden="true" @navigatedTo="getUserData">
+  <GridLayout rows="*" columns="*">
+    <app-layout>
+      <timetable />
+    </app-layout>
 
-        <!-- Show timetable only if user exists and profile completed -->
-        <timetable v-else :user="user" />
-      </app-layout>
-
-      <!-- FAB only if profile completed -->
-      <StackLayout
-        v-if="user && user.profile_status === 'completed'"
-        @tap="aiNav"
-        horizontalAlignment="right"
-        verticalAlignment="bottom"
-        margin="20"
-        backgroundColor="black"
-        width="55"
-        height="55"
-        padding="32px"
-        style="border-radius: 30; elevation: 6"
-      >
-        <Label
-          text="send"
-          horizontalAlignment="center"
-          verticalAlignment="center"
-          color="white"
-          fontSize="25"
-          class="fa"
-        />
-      </StackLayout>
-    </GridLayout>
-  </Page>
+    <StackLayout
+      v-if="row.user && row.status === 'completed'"
+      @tap="aiNav"
+      horizontalAlignment="right"
+      verticalAlignment="bottom"
+      margin="20"
+      backgroundColor="black"
+      width="55"
+      height="55"
+      style="border-radius: 30; elevation: 6"
+    >
+      <Label
+        text="send"
+        horizontalAlignment="center"
+        verticalAlignment="center"
+        color="white"
+        fontSize="25"
+        class="fa"
+      />
+    </StackLayout>
+  </GridLayout>
+</Page>
 </template>

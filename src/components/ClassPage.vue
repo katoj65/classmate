@@ -23,6 +23,8 @@ id:id
 const getSubjects = async ()=>{
 isLoading.value=true;
 
+console.log('subject page');
+
 try{
 const user=JSON.parse(ApplicationSettings.getString('user',null));
 const api = new classApi();
