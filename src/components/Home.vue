@@ -6,6 +6,9 @@ import Timetable from './templates/Timetable.vue';
 import CreateProfile from './templates/CreateProfile.vue';
 import AskPage from './AskPage.vue';
 
+
+
+
 const user = ref(null);
 
 // load user safely

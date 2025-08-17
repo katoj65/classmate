@@ -1,6 +1,6 @@
 <script setup>
 import classApi from './api/classApi';
-import { $navigateTo, ref } from 'nativescript-vue';
+import { $navigateTo, ref, onUnmounted } from 'nativescript-vue';
 import * as ApplicationSettings from '@nativescript/core/application-settings';
 import Skeleton from './templates/Skeleton.vue';
 import SubjectPage from './SubjectPage.vue';
@@ -8,7 +8,7 @@ import SubjectPage from './SubjectPage.vue';
 
 
 
-const title=ref('');
+const title=ref(null);
 const subjects=ref([]);
 const isLoading=ref(false);
 
@@ -44,13 +44,17 @@ isLoading.value=false;
 }catch(error){
 console.log(error);
 }
-
-
-
 }
 
 
 
+
+
+onUnmounted(()=>{
+isLoading.value=false;
+title.value=null;
+subjects.value=[];
+});
 
 
 
@@ -64,7 +68,7 @@ console.log(error);
 
 
 <template>
-<Page actionBarHidden="true" @loaded="getSubjects">
+<Page actionBarHidden="true"  @navigatedTo="getSubjects">
 <StackLayout backgroundColor="#F9FAFB" height="100%">
 
 <!-- Header -->

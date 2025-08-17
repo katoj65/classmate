@@ -1,5 +1,5 @@
 <script setup>
-import { $navigateTo, ref, defineProps } from 'nativescript-vue';
+import { $navigateTo, ref, defineProps, onBeforeUnmount } from 'nativescript-vue';
 import subjectApi from './api/subjectApi';
 import TopicPage from './TopicPage.vue';
 import Skeleton from './templates/Skeleton.vue';
@@ -11,23 +11,31 @@ id : Number
 
 
 const isLoading=ref(false);
-const title=ref('');
+const title=ref(null);
 const topics=ref([]);
+const isActive=true;
 
-
-const topicNav=()=>{
-$navigateTo(TopicPage);
+const topicNav=(id)=>{
+$navigateTo(TopicPage,{
+props:{
+id:id
+}
+});
 }
 
+
+
 const getTopics = async ()=>{
-
 isLoading.value=true;
-
 try{
 
 const id=props.id;
 const api=new subjectApi();
 let data=await api.getSubject(id);
+
+if(!isActive){
+return;
+}
 
 if(data.statusCode==200){
 
@@ -44,7 +52,7 @@ console.log(data.statusCode);
 isLoading.value=false;
 
 }catch(error){
-coneole.log(error);
+console.log(error);
 }
 
 
@@ -54,6 +62,11 @@ coneole.log(error);
 
 
 
+onBeforeUnmount(()=>{
+isLoading.value=false;
+title.value=null;
+topics.value=[];
+});
 
 
 
@@ -63,7 +76,7 @@ coneole.log(error);
 
 
 <template>
-    <Page actionBarHidden="true" @loaded="getTopics">
+    <Page actionBarHidden="true"  @navigatedTo="getTopics">
       <StackLayout backgroundColor="#F9FAFB" height="100%">
 
         <!-- Header -->
@@ -83,10 +96,9 @@ coneole.log(error);
 <ScrollView height="100%" v-if="isLoading==false">
 
 
-
 <StackLayout padding="20" spacing="16" v-if="topics.length>0">
 <!-- Topic Card -->
-<StackLayout backgroundColor="#FFFFFF" borderRadius="14" padding="16" v-for="(t,key) in topics" :key="key">
+<StackLayout backgroundColor="#FFFFFF" borderRadius="14" padding="16" v-for="(t,key) in topics" :key="key"  @tap="topicNav(t.id)">
 <Label :text="t.name" fontSize="18" fontWeight="bold" color="#1F2937" marginBottom="6"/>
 <Label :text="t.description" fontSize="14" color="#4B5563" textWrap="true"/>
 </StackLayout>

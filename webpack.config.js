@@ -1,10 +1,13 @@
 const webpack = require("@nativescript/webpack");
 
 module.exports = (env) => {
-	webpack.init(env);
+  webpack.init(env);
 
-	// Learn how to customize:
-	// https://docs.nativescript.org/webpack
+  // You can customize here
+  webpack.chainWebpack((config) => {
+    // Example: enable source maps
+    config.devtool("source-map");
+  });
 
-	return webpack.resolveConfig();
+  return webpack.resolveConfig();
 };

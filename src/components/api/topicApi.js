@@ -3,9 +3,8 @@ import { key } from "../database/connection";
 class topicApi{
 
 async getTopic(id){
-
 return await Http.request({
-url: 'https://ycmlubeulbufsfrvbmal.supabase.co/rest/v1/class?select=name,subject(name,topic(name))&name=eq.'+id,
+url: 'https://ycmlubeulbufsfrvbmal.supabase.co/rest/v1/topic?select=*,sub_topic(id,name,description),subject(name)&id=eq.'+id,
 method: 'GET',
 headers: {
 'apikey':key,
@@ -40,3 +39,4 @@ headers: {
 
 
 }
+export default topicApi;

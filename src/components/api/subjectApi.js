@@ -18,7 +18,7 @@ headers: {
 
 async getSubject(id){
 return await Http.request({
-url: 'https://ycmlubeulbufsfrvbmal.supabase.co/rest/v1/subject?select=name,topic(name,description,id)&id=eq.'+id,
+url: 'https://ycmlubeulbufsfrvbmal.supabase.co/rest/v1/subject?select=name,id,topic(name,description,id)&id=eq.'+id,
 method: 'GET',
 headers: {
 'apikey':key,
